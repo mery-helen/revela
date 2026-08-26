@@ -1,13 +1,13 @@
-[![CI - Revela Validation](https://github.com/mery-helen/revela/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/mery-helen/revela/actions/workflows/ci.yml)
 
-# 🎁 Revela - O seu amigo secreto descomplicado
+
+# 🎁 Revela - Foco no Presente
 
 ## 👥 Identificação/Autores
 * **Mery Helen de Souza** 
 
 
 ## 📝 Descrição do projeto
-O **Revela** é uma aplicação web desenvolvida para organizar grupos de Amigo Secreto de forma simples e segura. O sistema elimina a complexidade dos sorteios de papel, garantindo que o sorteio seja justo. O escopo abrange a gestão completa do evento, desde a criação do grupo e ingresso de participantes, até o sorteio automatizado e a lista de desejos.
+O **Revela** é uma plataforma moderna criada para gerenciar brincadeiras de Amigo Secreto de maneira prática e intuitiva. A ferramenta substitui os tradicionais papeizinhos por um algoritmo confiável, assegurando que o resultado seja 100% imparcial e livre de erros. A aplicação cobre todo o ciclo da confraternização, desde a montagem do grupo e convite dos membros, até a revelação digital e o cadastro de sugestões de presentes.
 
 ## 📚 Documentação Técnica (Docs)
 As definições de produto e arquitetura de software estão detalhadas nos seguintes documentos (Fonte da Verdade para a IA):
