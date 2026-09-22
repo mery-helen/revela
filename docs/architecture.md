@@ -94,6 +94,40 @@ npx json-server apps/api/db.json --port 3000
 
 ---
 
+## 🎨 2.2. Design Tokens
+
+> Tokens visuais base do Revela. Devem ser refletidos no `tailwind.config` e respeitados por todos os componentes de `shared/`.
+
+### 🔤 2.2.1. Tipografia
+
+**Família:** `Plus Jakarta Sans` (Google Fonts)
+
+| Peso | Nome       | Aplicação                                        |
+| :--- | :--------- | :------------------------------------------------ |
+| 800  | Extra Bold | Títulos de destaque e banners principais           |
+| 700  | Bold       | Títulos de seções, participantes e métricas        |
+| 600  | Semi Bold  | Botões primários (CTAs) e badges de status         |
+| 500  | Medium     | Menus, rótulos de campos e legendas de data        |
+| 400  | Regular    | Textos corridos, placeholders e descrições         |
+
+### 🎨 2.2.2 Paleta de Cores
+
+| Token                           | Valor                                                          |
+| :------------------------------- | :--------------------------------------------------------------- |
+| Cor Primária (Marsala)           | `#7D1242`                                                         |
+| Gradiente Hero & Login            | `linear-gradient(135deg, #5A002C, #7D1242, #9D1755, #A21CAF)`   |
+| Acento Suave (Pink Revelação)    | `#FBCFE8`                                                         |
+| Superfície & Fundo da Tela       | `#FAF6F8`                                                         |
+| Cards & Modais                   | `#FFFFFF` com borda `#F3E8EE`                                    |
+| Tipografia Escura (títulos)      | `#211319`                                                         |
+| Tipografia Escura (textos secund.)| `#66555C`                                                        |
+| Status — Confirmado              | fundo `#ECFDF5` / texto `#059669`                                |
+| Status — Pendente                | fundo `#FFFBEB` / texto `#D97706`                                |
+| Status — Restrição               | fundo `#FFF1F2` / texto `#BE123C`                                |
+
+
+---
+
 ## 🗂️ 3. Estrutura do Repositório
 
 O projeto utiliza um monorepo para manter frontend e backend provisório no mesmo repositório.
