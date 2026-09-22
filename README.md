@@ -15,7 +15,8 @@ As definições de produto e arquitetura de software estão detalhadas nos segui
 * [🛠️ Software Design Document (SDD)](./docs/architecture.md)
 
 ## 🎨 Prototipação no Stitch / Figma
-[🔗 Acessar o protótipo da aplicação (Em breve)](#)
+* **Protótipo Navegável no Stitch:** https://stitch.withgoogle.com/projects/15011456379193222865
+* **Mapa de Componentes - Figma:** https://www.figma.com/design/TCMau7Qn4SifjXr0yreL2q/Revela?node-id=1-2545&t=YpjQZaEPI57gOOrH-1
 
 ## 🛠️ Stack Tecnológica
 * **Frontend:** Angular 21+ (Zoneless, Standalone, Signals)
@@ -25,8 +26,7 @@ As definições de produto e arquitetura de software estão detalhadas nos segui
 * **Bibliotecas Adicionais:** `date-fns` (Manipulação de Datas).
 
 ## 🌐 Link para o site em produção
-* **Protótipo Navegável no Stitch:** https://stitch.withgoogle.com/projects/15011456379193222865
-* **Mapa de Componentes - Figma:** https://www.figma.com/design/TCMau7Qn4SifjXr0yreL2q/Revela?node-id=1-2545&t=YpjQZaEPI57gOOrH-1
+
 
 ---
 
