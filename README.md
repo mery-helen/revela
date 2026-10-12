@@ -19,7 +19,7 @@ As definições de produto e arquitetura de software estão detalhadas nos segui
 * **Mapa de Componentes - Figma:** https://www.figma.com/design/TCMau7Qn4SifjXr0yreL2q/Revela?node-id=1-2545&t=YpjQZaEPI57gOOrH-1
 
 ## 🛠️ Stack Tecnológica
-* **Frontend:** Angular 21+ (Zoneless, Standalone, Signals)
+* **Frontend:** Angular (Zoneless, Standalone, Signals)
 * **Estilo:** Tailwind CSS
 * **Dados (Fase Atual):** json-server (Mock REST API)
 * **BaaS (Backend as a Service - Fase Final):** Supabase (Auth, PostgreSQL)

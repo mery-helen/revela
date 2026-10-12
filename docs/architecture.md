@@ -1,8 +1,8 @@
 # 🛠️ Software Design Document (SDD)
 
 **Projeto:** Revela
-**Versão:** 1.0.0
-**Última atualização:** 2026-08-26
+**Versão:** 1.1.0
+**Última atualização:** 2026-10-12
 
 > 🤖 O `prd.md` responde **o que** o produto faz. Este documento responde **onde as coisas moram e como se chamam**.
 >
@@ -14,17 +14,15 @@
 
 > Onde a IDE agêntica busca a verdade. Este documento funciona como índice; as configurações reais ficam nos arquivos correspondentes.
 
-| Fonte                 | Onde configurar                   | Serve para                                                    |
-| :-------------------- | :-------------------------------- | :------------------------------------------------------------ |
-| Regras do agente      | `AGENTS.md` na raiz               | Orientar a IA a ler o PRD e o SDD antes de escrever código    |
-| Design (Figma/Stitch) | Link público do arquivo de design | Cores, tipografia, componentes e hierarquia visual            |
-| GitHub MCP            | `.mcp.json`                       | Permitir que a IA consulte as Issues e informações do projeto |
+| Fonte | Onde configurar | Serve para |
+| :--- | :--- | :--- |
+| Regras do agente | `AGENTS.md` na raiz | Orientar a IA a ler o PRD e o SDD antes de escrever código |
+| Design (Figma/Stitch) | Link público do arquivo de design | Cores, tipografia, componentes e hierarquia visual |
+| GitHub MCP | `.mcp.json` | Permitir que a IA consulte as Issues e informações do projeto |
 
 ### 📌 1.1. O arquivo `AGENTS.md`
 
-O arquivo `AGENTS.md` será obrigatório na raiz do repositório.
-
-Conteúdo mínimo:
+O arquivo `AGENTS.md` é obrigatório na raiz do repositório com as seguintes diretrizes:
 
 ```markdown
 # Instruções para agentes de IA
@@ -33,9 +31,10 @@ Antes de escrever código, leia `docs/prd.md` e `docs/architecture.md`.
 
 - Não invente regra de negócio: se não está no PRD, pergunte.
 - Nomes de entidade seguem o Glossário Técnico em `architecture.md` §5.1.
-- O backend atual é json-server. NÃO gere código de Supabase, Firebase ou outro banco real nesta etapa.
-- Os dados provisórios são acessados por repositories em `core/data/`.
-- Nenhum componente chama `HttpClient` diretamente.
+- O backend provisório é json-server. NÃO gere código de Supabase, Firebase ou outro banco real nesta etapa.
+- Todos os models residem exclusivamente em `core/data/models/`. Não crie models dentro das features.
+- Os dados provisórios são acessados exclusivamente por repositories em `core/data/`.
+- Nenhum componente chama `HttpClient` ou SDK externo diretamente.
 - Toda tela que busca dados trata os estados de carregamento, vazio e erro.
 - Respeite os padrões modernos de Angular definidos neste documento.
 ```
@@ -48,27 +47,35 @@ Antes de escrever código, leia `docs/prd.md` e `docs/architecture.md`.
 
 **Frontend:**
 
-* Angular 21+
-* Arquitetura Standalone
-* Zoneless
-* Signals para gerenciamento de estado
-* `@if`, `@for` e `@switch` para fluxo de controle
-* `input()` e `output()` para comunicação entre componentes
-* `inject()` para injeção de dependências
-* Lazy loading por rota de feature
+* **Angular** (linha ativa mais recente, confirmada via Context7)
+* **Arquitetura Standalone** (sem `NgModules`)
+* **Zoneless** (`provideExperimentalZonelessChangeDetection()`)
+* **Signals** para gerenciamento de estado (`signal()`, `computed()`, `model()`, `effect()`)
+* **Fluxo de controle moderno:** `@if`, `@switch` e obrigatoriamente `@for (...; track item.id)`
+* **Comunicação e DI:** `input()` e `output()` funcionais; injeção de dependências via `inject()`
+* **Deferrable Views (`@defer`):** Opcional, aplicado pontualmente onde houver ganho real de desempenho de carregamento
+* **Roteamento:** Lazy loading por rota de feature; `withComponentInputBinding()` para binding automático de parâmetros de rota em inputs; proteção de rotas exclusivamente com Functional Route Guards (`CanActivateFn`)
 
 **Estilo:**
 
-* Tailwind CSS
-* Lucide, caso seja utilizado no projeto
+* **Tailwind CSS**
+* **Lucide Angular**, caso seja necessário para iconografia
 
-**Dados provisórios:**
+**Testes e Qualidade:**
 
-* json-server
+* **Testes unitários:** **Vitest** (runner nativo do Angular CLI, compatível com arquitetura Zoneless)
+* **Linter:** **ESLint** com regras oficiais `@angular-eslint`
+* *Nota:* A configuração fina de scripts de teste e lint será injetada na fase de setup (`/utf-setup`).
 
-**Backend futuro:**
+**Dados Provisórios:**
 
-* Supabase, a ser incorporado posteriormente na disciplina
+* **json-server** (Mock REST API local servindo `apps/api/db.json` na porta 3000)
+
+**Backend Futuro (Fase Final / Entrega 3):**
+
+* **Supabase** (PostgreSQL relacional + Supabase Auth)
+* Integração encapsulada nos repositories via SDK oficial (`@supabase/supabase-js`)
+* Functional Interceptors para injeção de tokens JWT e tratamento global de erros HTTP adiados para a Entrega 3 (quando a autenticação real for incorporada)
 
 ---
 
@@ -84,13 +91,13 @@ npx json-server apps/api/db.json --port 3000
 
 ### Limitações provisórias
 
-| O que fingimos                      | A verdade atual                                                 | Issue para substituir |
-| :---------------------------------- | :-------------------------------------------------------------- | :-------------------- |
-| Existe autenticação                 | Não existe autenticação real no json-server.                    | A definir             |
-| Cada registro possui um dono        | O json-server não aplica controle de propriedade ou permissões. | A definir             |
-| O servidor valida regras de negócio | O json-server não aplica as regras de negócio do Revela.        | A definir             |
+| O que fingimos | A verdade atual | Issue para substituir |
+| :--- | :--- | :--- |
+| Existe autenticação | Não existe autenticação real no json-server. | A definir (Entrega 3) |
+| Cada registro possui um dono | O json-server não aplica controle de propriedade ou permissões. | A definir (Entrega 3) |
+| O servidor valida regras de negócio | O json-server não aplica as regras de negócio do Revela. | A definir (Entrega 3) |
 
-> Essas limitações são provisórias e deverão ser substituídas quando o Supabase e a autenticação forem implementados.
+> Essas limitações são provisórias e serão substituídas quando o Supabase e a autenticação entrarem na Entrega 3.
 
 ---
 
@@ -102,35 +109,34 @@ npx json-server apps/api/db.json --port 3000
 
 **Família:** `Plus Jakarta Sans` (Google Fonts)
 
-| Peso | Nome       | Aplicação                                        |
-| :--- | :--------- | :------------------------------------------------ |
-| 800  | Extra Bold | Títulos de destaque e banners principais           |
-| 700  | Bold       | Títulos de seções, participantes e métricas        |
-| 600  | Semi Bold  | Botões primários (CTAs) e badges de status         |
-| 500  | Medium     | Menus, rótulos de campos e legendas de data        |
-| 400  | Regular    | Textos corridos, placeholders e descrições         |
+| Peso | Nome | Aplicação |
+| :--- | :--- | :--- |
+| 800 | Extra Bold | Títulos de destaque e banners principais |
+| 700 | Bold | Títulos de seções, participantes e métricas |
+| 600 | Semi Bold | Botões primários (CTAs) e badges de status |
+| 500 | Medium | Menus, rótulos de campos e legendas de data |
+| 400 | Regular | Textos corridos, placeholders e descrições |
 
-### 🎨 2.2.2 Paleta de Cores
+### 🎨 2.2.2. Paleta de Cores
 
-| Token                           | Valor                                                          |
-| :------------------------------- | :--------------------------------------------------------------- |
-| Cor Primária (Marsala)           | `#7D1242`                                                         |
-| Gradiente Hero & Login            | `linear-gradient(135deg, #5A002C, #7D1242, #9D1755, #A21CAF)`   |
-| Acento Suave (Pink Revelação)    | `#FBCFE8`                                                         |
-| Superfície & Fundo da Tela       | `#FAF6F8`                                                         |
-| Cards & Modais                   | `#FFFFFF` com borda `#F3E8EE`                                    |
-| Tipografia Escura (títulos)      | `#211319`                                                         |
-| Tipografia Escura (textos secund.)| `#66555C`                                                        |
-| Status — Confirmado              | fundo `#ECFDF5` / texto `#059669`                                |
-| Status — Pendente                | fundo `#FFFBEB` / texto `#D97706`                                |
-| Status — Restrição               | fundo `#FFF1F2` / texto `#BE123C`                                |
-
+| Token | Valor |
+| :--- | :--- |
+| Cor Primária (Marsala) | `#7D1242` |
+| Gradiente Hero & Login | `linear-gradient(135deg, #5A002C, #7D1242, #9D1755, #A21CAF)` |
+| Acento Suave (Pink Revelação) | `#FBCFE8` |
+| Superfície & Fundo da Tela | `#FAF6F8` |
+| Cards & Modais | `#FFFFFF` com borda `#F3E8EE` |
+| Tipografia Escura (títulos) | `#211319` |
+| Tipografia Escura (textos secund.) | `#66555C` |
+| Status — Confirmado | fundo `#ECFDF5` / texto `#059669` |
+| Status — Pendente | fundo `#FFFBEB` / texto `#D97706` |
+| Status — Restrição | fundo `#FFF1F2` / texto `#BE123C` |
 
 ---
 
 ## 🗂️ 3. Estrutura do Repositório
 
-O projeto utiliza um monorepo para manter frontend e backend provisório no mesmo repositório.
+O projeto utiliza um monorepo para manter frontend e o mock de backend no mesmo repositório.
 
 ### Estrutura
 
@@ -143,14 +149,39 @@ O projeto utiliza um monorepo para manter frontend e backend provisório no mesm
 │   ├── prd.md
 │   └── architecture.md
 └── apps/
-    ├── web/
-    └── api/
-        └── db.json
+    ├── api/
+    │   └── db.json
+    └── web/
+        └── src/
+            ├── environments/
+            │   ├── environment.ts
+            │   └── environment.development.ts
+            └── app/
+                ├── core/
+                │   ├── data/
+                │   │   ├── models/       # TODOS os modelos e interfaces do sistema residem aqui
+                │   │   └── repositories/ # Repositories de acesso a dados
+                │   ├── guards/           # CanActivateFn
+                │   └── services/         # Serviços de infraestrutura/estado global
+                ├── shared/
+                │   ├── components/       # Componentes visuais atômicos reutilizáveis
+                │   ├── pipes/            # Pipes de formatação
+                │   └── directives/       # Diretivas de UI
+                └── features/
+                    ├── auth/
+                    │   ├── pages/
+                    │   └── components/
+                    ├── groups/
+                    │   ├── pages/
+                    │   └── components/
+                    └── wishlist/
+                        ├── pages/
+                        └── components/
 ```
 
-### Atalhos na raiz
+### Atalhos na raiz (`package.json`)
 
-O `package.json` da raiz deverá disponibilizar atalhos para execução das aplicações:
+Nesta etapa, o `package.json` da raiz disponibiliza exclusivamente atalhos para execução das aplicações (os scripts de `test` e `lint` virão da etapa de setup):
 
 ```json
 {
@@ -173,80 +204,32 @@ e:
 npm start
 ```
 
-Quando o Supabase for incorporado, a estrutura de `apps/api/` poderá ser adaptada para conter as configurações, migrations e Edge Functions necessárias.
-
 ---
 
 ## 🏗️ 4. Arquitetura Frontend
 
-O código frontend ficará em:
+O código frontend reside em `apps/web/src/app/` e segue uma organização estritamente Feature-Driven:
 
-```text
-apps/web/src/app/
-```
+### 🧩 4.1. Camadas da Aplicação
 
-A organização seguirá uma abordagem orientada a funcionalidades e domínios de negócio.
+* **`core/`**: Elementos globais da aplicação (configuração, guards, services globais e a camada de acesso a dados `core/data/`).
+  * **`core/data/models/`**: **Local único** de definição das interfaces e tipos de dados do domínio. Features **não** criam modelos próprios.
+  * **`core/data/repositories/`**: Classes injetáveis responsáveis pela comunicação com a API REST / json-server (e futuramente com o SDK do Supabase).
+* **`shared/`**: Elementos visuais e utilitários reutilizáveis e independentes de regra de negócio (botões, cards, modais, pipes de moeda/data, diretivas).
+* **`features/`**: Funcionalidades de negócio verticais do Revela (páginas e componentes de apresentação). As features **não possuem** pasta `models/`.
 
-### 🧩 4.1. Feature-Driven
-
-```text
-core/
-```
-
-Contém elementos utilizados globalmente pela aplicação, como:
-
-* configuração;
-* repositories;
-* serviços globais;
-* guards;
-* interceptors.
-
-```text
-shared/
-```
-
-Contém elementos reutilizáveis e independentes de domínio, como:
-
-* componentes visuais;
-* pipes;
-* diretivas;
-* elementos de interface.
-
-```text
-features/
-```
-
-Contém as funcionalidades do Revela organizadas por domínio.
-
-Exemplo:
-
-```text
-features/groups/
-├── pages/
-├── components/
-└── models/
-```
-
-As features serão criadas conforme suas respectivas User Stories forem implementadas.
-
-### 📏 Regra de dependência
+### 📏 Regra Estrita de Dependência
 
 * `features/` pode importar de `core/` e `shared/`.
-* `shared/` não importa de `features/`.
-* Uma feature não deve importar diretamente outra feature.
-* Caso duas features precisem do mesmo recurso específico e reutilizável, ele deve ser avaliado para inclusão em `shared/` ou `core/`.
+* `shared/` **não** importa de `features/`.
+* Uma feature **não** importa diretamente outra feature.
+* Qualquer recurso que seja necessário para duas ou mais features deve ser avaliado e promovido para `shared/` (se for visual/utilitário) ou `core/` (se for dado/regra global).
 
 ---
 
-### 🔌 4.2. Acesso aos dados
+### 🔌 4.2. Acesso aos Dados e Isolamento
 
-Nenhum componente deve utilizar `HttpClient` diretamente.
-
-O acesso aos dados deve ser realizado exclusivamente por repositories localizados em:
-
-```text
-core/data/
-```
+Nenhum componente chama `HttpClient` ou serviços externos diretamente. O acesso aos dados é realizado exclusivamente por repositories em `core/data/repositories/`.
 
 Exemplo:
 
@@ -256,23 +239,23 @@ export class GroupsRepository {
   private http = inject(HttpClient);
   private url = `${environment.apiUrl}/groups`;
 
-  list() {
+  list(): Observable<Group[]> {
     return this.http.get<Group[]>(this.url);
   }
 
-  create(input: NewGroup) {
+  create(input: Omit<Group, 'id'>): Observable<Group> {
     return this.http.post<Group>(this.url, input);
   }
 }
 ```
 
-Essa separação permite substituir o json-server pelo Supabase posteriormente sem espalhar detalhes de acesso aos dados pelos componentes da aplicação.
+Essa separação garante que a futura migração para o SDK `@supabase/supabase-js` fique restrita à camada de repositório, sem exigir alterações nos componentes de apresentação.
 
 ---
 
 ### 🌐 4.3. Endereço da API
 
-O endereço da API será definido no arquivo de ambiente do Angular:
+O endereço da API é definido no arquivo de ambiente do Angular:
 
 ```ts
 export const environment = {
@@ -280,9 +263,7 @@ export const environment = {
 };
 ```
 
-O arquivo de ambiente é público após o build da aplicação.
-
-> 🔒 Nenhum segredo, senha, chave privada ou credencial deve ser armazenado em `environment.ts`.
+> 🔒 Nenhum segredo, chave privada ou credencial deve ser armazenado em `environment.ts`.
 
 ---
 
@@ -290,19 +271,17 @@ O arquivo de ambiente é público após o build da aplicação.
 
 ### 📖 5.1. Glossário Técnico
 
-Os termos do negócio definidos no PRD serão mapeados para entidades técnicas em inglês.
+Mapeamento rigoroso dos termos do negócio (`docs/prd.md`) para entidades técnicas em inglês:
 
-| Termo PRD                | Entidade técnica | Atributos principais                                              |
-| :----------------------- | :--------------- | :---------------------------------------------------------------- |
-| Usuário                  | `User`           | `id`, `name`, `email`                                             |
-| Grupo                    | `Group`          | `id`, `name`, `revealDate`, `suggestedValue`, `ownerId`, `status` |
-| Participante             | `GroupMember`    | `id`, `groupId`, `userId`                                         |
-| Convite                  | `GroupInvite`    | `id`, `groupId`, `code`                                           |
-| Sorteio/Resultado        | `DrawResult`     | `id`, `groupId`, `giverId`, `receiverId`                          |
-| Exclusão                 | `DrawExclusion`  | `id`, `groupId`, `userId`, `excludedUserId`                       |
-| Item da Lista de Desejos | `WishlistItem`   | `id`, `groupId`, `userId`, `description`                          |
-
-> A senha não faz parte da entidade `User` permanente. Quando a autenticação real for implementada, o gerenciamento de credenciais será responsabilidade do serviço de autenticação.
+| Termo PRD | Entidade técnica | Atributos principais | Mapeamento / Valores de Domínio |
+| :--- | :--- | :--- | :--- |
+| Usuário | `User` | `id`, `name`, `email` | Senha tratada pelo serviço de autenticação |
+| Grupo | `Group` | `id`, `name`, `revealDate`, `suggestedValue`, `ownerId`, `status` | `status`: `'open'` ("Aguardando participantes") ou `'drawn'` ("Sorteado") |
+| Participante | `GroupMember` | `id`, `groupId`, `userId` | Associação participante ao grupo |
+| Convite | `GroupInvite` | `id`, `groupId`, `code` | Código único para adesão |
+| Sorteio / Resultado | `DrawResult` | `id`, `groupId`, `giverId`, `receiverId` | Par gerado no sorteio (`giver` tirou `receiver`) |
+| Exclusão | `DrawExclusion` | `id`, `groupId`, `userId`, `excludedUserId` | Restrição: `userId` não pode tirar `excludedUserId` |
+| Item da Lista de Desejos | `WishlistItem` | `id`, `groupId`, `userId`, `description` | Sugestão de presente do participante no grupo |
 
 ---
 
@@ -334,7 +313,7 @@ erDiagram
         string revealDate
         float suggestedValue
         string ownerId FK
-        string status
+        string status "open | drawn"
     }
 
     GROUP_MEMBERS {
@@ -373,17 +352,9 @@ erDiagram
 
 ---
 
-### 🗃️ 5.3. Onde mora o formato dos dados
+### 🗃️ 5.3. Mock de Dados (`db.json`)
 
-Durante a fase provisória, o formato dos dados será armazenado em:
-
-```text
-apps/api/db.json
-```
-
-Cada chave de primeiro nível representa uma coleção e gera uma rota REST correspondente no `json-server`.
-
-Exemplo:
+Durante a fase provisória, o formato dos dados é centralizado em `apps/api/db.json`:
 
 ```json
 {
@@ -397,36 +368,36 @@ Exemplo:
 }
 ```
 
-> ⚠️ O `json-server` pode alterar o arquivo `db.json` durante operações de escrita. Antes de realizar um commit, verificar se alterações realizadas durante testes não foram incluídas acidentalmente.
+> ⚠️ O `json-server` persiste alterações diretamente no arquivo `db.json` durante operações de escrita. Antes de commits, verificar alterações espúrias.
 
 ---
 
 ## 🗺️ 6. Mapa de Domínios e Rotas
 
-Este mapa será preenchido conforme as funcionalidades forem implementadas.
+As rotas são carregadas via lazy loading e utilizam `CanActivateFn` para controle de acesso:
 
-A especificação `.spec.md` de cada User Story será responsável por definir os detalhes da implementação.
-
-| Domínio | Rota | Page Component | Guard | Dados | US |
-| :------ | :--- | :------------- | :---- | :---- | :- |
-| —       | —    | —              | —     | —     | —  |
-
-> A coluna `Guard` será preenchida quando a autenticação e os controles de acesso forem implementados.
->
-> A coluna `Dados` deve referenciar repositories, nunca URLs ou consultas SQL diretamente.
+| Domínio | Rota | Page Component | Guard | Dados (Repository) | User Story |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Autenticação | `/login` | `LoginPageComponent` | — | `AuthRepository` | US02 |
+| Autenticação | `/register` | `RegisterPageComponent` | — | `AuthRepository` | US01 |
+| Grupos | `/groups` | `GroupsListPageComponent` | `authGuard` | `GroupsRepository` | US03 |
+| Grupos | `/groups/new` | `GroupCreatePageComponent` | `authGuard` | `GroupsRepository` | US03 |
+| Grupos | `/groups/:id` | `GroupDetailPageComponent` | `authGuard` | `GroupsRepository` | US04, US06, US08 |
+| Grupos | `/groups/:id/draw` | `DrawResultPageComponent` | `authGuard` | `DrawRepository` | US07 |
+| Grupos | `/join/:code` | `JoinGroupPageComponent` | `authGuard` | `InvitesRepository` | US05 |
+| Desejos | `/groups/:id/wishlist` | `WishlistPageComponent` | `authGuard` | `WishlistRepository` | US09, US10 |
 
 ---
 
 ## 📅 7. Histórico
 
-| Data       | Versão | O que mudou                                  |
-| :--------- | :----- | :------------------------------------------- |
-| 2026-08-26 | 1.0.0  | Versão inicial do SDD para o projeto Revela. |
+| Data | Versão | O que mudou |
+| :--- | :--- | :--- |
+| 2026-08-26 | 1.0.0 | Versão inicial do SDD para o projeto Revela. |
+| 2026-10-12 | 1.1.0 | Alinhamento com `/utf-architecture`: Angular linha ativa com Zoneless; Vitest e ESLint formalizados; models centralizados em `core/data/models/`; `apps/api/` simplificado para `db.json`; status de grupos mapeado; interceptors/auth postergados para a Entrega 3. |
 
 ---
 
 ## 🛑 O que ainda não está neste documento
 
-A implementação do banco de dados real, autenticação, gerenciamento de sessão, permissões e políticas de segurança será realizada posteriormente, quando o Supabase for incorporado ao projeto.
-
-Essas decisões serão documentadas e detalhadas em uma versão posterior da arquitetura.
+A integração completa com o Supabase (Auth com tokens JWT, migração para banco PostgreSQL relacional hospedado em nuvem e Interceptors HTTP para injeção de credenciais) será implementada na **Entrega 3**, conforme o planejamento da disciplina.
