@@ -1,10 +1,10 @@
-# 📄 Product Requirements Document (PRD)
+﻿# 📄 Product Requirements Document (PRD)
 
 **Projeto:** Revela
 
 **Versão:** 1.0.0
 
-**Última atualização:** 2026-08-26
+**Última atualização:** 2026-10-12
 
 > 🤖 **Este documento é a fonte da verdade sobre o QUE o produto faz.** Regra de negócio que não estiver aqui não existe — nem para a equipe, nem para a IA.
 >
@@ -140,6 +140,8 @@
 
 - [ ] **Dado** que existem exclusões cadastradas que tornam o sorteio impossível, **quando** tento sortear, **então** vejo "Não é possível sortear com essas restrições" e o sorteio não é executado.
 
+- [ ] **Dado** que o organizador aciona o sorteio, **quando** o sistema abre o Modal de Confirmação e Validação Pré-Sorteio, **então** o modal exibe: (a) quantidade de membros confirmados vs. pendentes, (b) total de regras de exclusão ativas, e (c) o aviso *"O resultado será mantido em segredo e só será revelado a cada participante individualmente quando ele acessar o aplicativo."*; o sorteio só é efetivado após **dupla confirmação** no modal.
+
 **Regras relacionadas:** RN04, RN05
 
 ---
@@ -256,3 +258,4 @@
 | Data | Versão | O que mudou |
 | :--- | :--- | :--- |
 | 2026-08-26 | 1.0.0 | Versão inicial do PRD: US01–US10, RN01–RN06 e requisitos não funcionais. |
+| 2026-10-12 | 1.1.0 | Adicionado critério de aceite US06: Modal de Confirmação e Validação Pré-Sorteio com dupla confirmação (ponto de desistência). |
