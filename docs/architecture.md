@@ -1,8 +1,8 @@
 # 🛠️ Software Design Document (SDD)
 
 **Projeto:** Revela
-**Versão:** 1.1.0
-**Última atualização:** 2026-10-12
+**Versão:** 1.2.0
+**Última atualização:** 2026-10-16
 
 > 🤖 O `prd.md` responde **o que** o produto faz. Este documento responde **onde as coisas moram e como se chamam**.
 >
@@ -18,26 +18,17 @@
 | :--- | :--- | :--- |
 | Regras do agente | `AGENTS.md` na raiz | Orientar a IA a ler o PRD e o SDD antes de escrever código |
 | Design (Figma/Stitch) | Link público do arquivo de design | Cores, tipografia, componentes e hierarquia visual |
-| GitHub MCP | `.mcp.json` | Permitir que a IA consulte as Issues e informações do projeto |
+| GitHub MCP | Configuração pessoal da IDE (fora do repositório, nunca commitada) | Permitir que a IA consulte as Issues e informações do projeto |
 
 ### 📌 1.1. O arquivo `AGENTS.md`
 
-O arquivo `AGENTS.md` é obrigatório na raiz do repositório com as seguintes diretrizes:
+O `AGENTS.md` já existe na raiz (vem do template da disciplina) e aponta para `.agents/rules/utf-rules.md`. Não é reescrito pela equipe. As regras específicas deste projeto vivem neste documento:
 
-```markdown
-# Instruções para agentes de IA
-
-Antes de escrever código, leia `docs/prd.md` e `docs/architecture.md`.
-
-- Não invente regra de negócio: se não está no PRD, pergunte.
-- Nomes de entidade seguem o Glossário Técnico em `architecture.md` §5.1.
-- O backend provisório é json-server. NÃO gere código de Supabase, Firebase ou outro banco real nesta etapa.
-- Todos os models residem exclusivamente em `core/data/models/`. Não crie models dentro das features.
-- Os dados provisórios são acessados exclusivamente por repositories em `core/data/`.
-- Nenhum componente chama `HttpClient` ou SDK externo diretamente.
-- Toda tela que busca dados trata os estados de carregamento, vazio e erro.
-- Respeite os padrões modernos de Angular definidos neste documento.
-```
+* Models só em `core/data/models/`.
+* Dados só por repositories em `core/data/repositories/`; nenhum componente chama `HttpClient` ou SDK diretamente.
+* Nomes de entidade seguem o Glossário Técnico (§5.1).
+* Toda tela que busca dados trata carregamento, vazio e erro.
+* Backend provisório é json-server: não gerar código de Supabase nesta etapa.
 
 ---
 
@@ -47,9 +38,9 @@ Antes de escrever código, leia `docs/prd.md` e `docs/architecture.md`.
 
 **Frontend:**
 
-* **Angular** (linha ativa mais recente, confirmada via Context7)
+* **Angular 22+**
 * **Arquitetura Standalone** (sem `NgModules`)
-* **Zoneless** (`provideExperimentalZonelessChangeDetection()`)
+* **Zoneless** (sem Zone.js)
 * **Signals** para gerenciamento de estado (`signal()`, `computed()`, `model()`, `effect()`)
 * **Fluxo de controle moderno:** `@if`, `@switch` e obrigatoriamente `@for (...; track item.id)`
 * **Comunicação e DI:** `input()` e `output()` funcionais; injeção de dependências via `inject()`
@@ -86,8 +77,10 @@ Durante esta etapa, o backend real ainda não está implementado. Os dados serã
 **Comando para execução:**
 
 ```bash
-npx json-server apps/api/db.json --port 3000
+npm run api
 ```
+
+> O json-server será instalado como devDependency (versão fixada no package.json).
 
 ### Limitações provisórias
 
@@ -103,34 +96,7 @@ npx json-server apps/api/db.json --port 3000
 
 ## 🎨 2.2. Design Tokens
 
-> Tokens visuais base do Revela. Devem ser refletidos no `tailwind.config` e respeitados por todos os componentes de `shared/`.
-
-### 🔤 2.2.1. Tipografia
-
-**Família:** `Plus Jakarta Sans` (Google Fonts)
-
-| Peso | Nome | Aplicação |
-| :--- | :--- | :--- |
-| 800 | Extra Bold | Títulos de destaque e banners principais |
-| 700 | Bold | Títulos de seções, participantes e métricas |
-| 600 | Semi Bold | Botões primários (CTAs) e badges de status |
-| 500 | Medium | Menus, rótulos de campos e legendas de data |
-| 400 | Regular | Textos corridos, placeholders e descrições |
-
-### 🎨 2.2.2. Paleta de Cores
-
-| Token | Valor |
-| :--- | :--- |
-| Cor Primária (Marsala) | `#7D1242` |
-| Gradiente Hero & Login | `linear-gradient(135deg, #5A002C, #7D1242, #9D1755, #A21CAF)` |
-| Acento Suave (Pink Revelação) | `#FBCFE8` |
-| Superfície & Fundo da Tela | `#FAF6F8` |
-| Cards & Modais | `#FFFFFF` com borda `#F3E8EE` |
-| Tipografia Escura (títulos) | `#211319` |
-| Tipografia Escura (textos secund.) | `#66555C` |
-| Status — Confirmado | fundo `#ECFDF5` / texto `#059669` |
-| Status — Pendente | fundo `#FFFBEB` / texto `#D97706` |
-| Status — Restrição | fundo `#FFF1F2` / texto `#BE123C` |
+Os tokens visuais (paleta, tipografia, espaçamento, estados, breakpoints e PWA) vivem em [`docs/design-tokens.md`](./design-tokens.md). Framework CSS: Tailwind CSS. Este documento não repete os valores.
 
 ---
 
@@ -395,6 +361,7 @@ As rotas são carregadas via lazy loading e utilizam `CanActivateFn` para contro
 | :--- | :--- | :--- |
 | 2026-08-26 | 1.0.0 | Versão inicial do SDD para o projeto Revela. |
 | 2026-10-12 | 1.1.0 | Alinhamento com `/utf-architecture`: Angular linha ativa com Zoneless; Vitest e ESLint formalizados; models centralizados em `core/data/models/`; `apps/api/` simplificado para `db.json`; status de grupos mapeado; interceptors/auth postergados para a Entrega 3. |
+| 2026-10-16 | 1.2.0 | Ajustes: tokens movidos para design-tokens.md; AGENTS.md referenciado sem reescrita; versão do Angular em linha. |
 
 ---
 
