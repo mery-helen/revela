@@ -192,9 +192,9 @@
 
 **Critérios de aceite:**
 
-- [ ] **Dado** que a pessoa que tirei cadastrou desejos, **quando** abro "Meu amigo secreto", **então** vejo a lista dela junto com o nome.
+- [ ] **Dado** que a pessoa que tirei cadastrou desejos, **quando** abro "Meu amigo secreto" e acesso a lista de desejos dela, **então** vejo os itens cadastrados junto com o nome.
 
-- [ ] **Dado** que ela não cadastrou nada, **quando** abro a tela, **então** vejo "Nenhuma sugestão cadastrada ainda".
+- [ ] **Dado** que ela não cadastrou nada, **quando** acesso a lista de desejos dela, **então** vejo "Nenhuma sugestão cadastrada ainda".
 
 ---
 
