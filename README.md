@@ -23,7 +23,7 @@ O **Revela** é uma aplicação web para organizar o amigo secreto de forma simp
 * Supabase (backend final)
 
 ## 🌐 Em produção
-A partir da Entrega 3.
+A partir da Entrega 2.
 
 ## 💻 Instruções de Execução
 A partir da Entrega 2.

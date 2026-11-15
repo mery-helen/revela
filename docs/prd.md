@@ -2,7 +2,7 @@
 
 **Projeto:** Revela
 
-**Versão:** 1.0.0
+**Versão:** 1.1.0
 
 **Última atualização:** 2026-10-12
 

@@ -121,8 +121,6 @@
    > *"O resultado será mantido em segredo e só será revelado a cada participante individualmente quando ele acessar o aplicativo."*
 4. Sorteio só efetivado após **dupla confirmação** no modal.
 
-> 📝 **Ação necessária:** Atualizar `docs/prd.md` (US06) com este critério de aceite / regra de negócio, com seu OK.
-
 ---
 
 ## 📋 Histórico

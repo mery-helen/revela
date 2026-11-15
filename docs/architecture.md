@@ -113,7 +113,9 @@ O projeto utiliza um monorepo para manter frontend e o mock de backend no mesmo 
 ├── package.json
 ├── docs/
 │   ├── prd.md
-│   └── architecture.md
+│   ├── architecture.md
+│   ├── design-tokens.md
+│   └── checklist.md
 └── apps/
     ├── api/
     │   └── db.json
@@ -352,6 +354,26 @@ As rotas são carregadas via lazy loading e utilizam `CanActivateFn` para contro
 | Grupos | `/groups/:id/draw` | `DrawResultPageComponent` | `authGuard` | `DrawRepository` | US07 |
 | Grupos | `/join/:code` | `JoinGroupPageComponent` | `authGuard` | `InvitesRepository` | US05 |
 | Desejos | `/groups/:id/wishlist` | `WishlistPageComponent` | `authGuard` | `WishlistRepository` | US09, US10 |
+
+### 🧩 6.1. Mapa de Componentes (Figma → Código)
+
+Mapeamento dos componentes do Mapa de Componentes do Figma para a estrutura de pastas definida na seção 3:
+
+| Componente (Figma) | Local no código | Observação |
+| :--- | :--- | :--- |
+| `<app-header>` | `shared/components/` | Cabeçalho atômico reutilizável |
+| `<app-banner>` | `shared/components/` | Banner de destaque (hero/login) |
+| `<app-stat-card>` | `shared/components/` | Card de métrica (ex.: confirmados vs. pendentes) |
+| `<app-group-card>` | `shared/components/` | Card de grupo na listagem |
+| `<app-login>` | `features/auth/` | Tela de login (US02) |
+| `<app-dashboard>` | `features/groups/` | Bloco de visão geral em `/groups` |
+| `<app-groups>` | `features/groups/` | Listagem de grupos em `/groups` |
+| `<app-new-group>` | `features/groups/` | Criação de grupo (`/groups/new`, US03) |
+| `<app-members>` | `features/groups/` | Lista de participantes (`/groups/:id`, US04–US06) |
+| `<app-reveal>` | `features/groups/` | Revelação do resultado (`/groups/:id/draw`, US07) |
+| `<app-profile>` | `features/wishlist/` | Perfil do participante no grupo e lista de desejos (US09, US10); pode residir em `features/auth/` caso o perfil seja tratado como dado de conta |
+
+> ⚠️ `<app-dashboard>` e `<app-groups>` não são rotas separadas: ambos consolidam a rota `/groups`, renderizada pelo `GroupsListPageComponent`. O `<app-dashboard>` atua como bloco de visão geral (métricas/resumo) e o `<app-groups>` como a listagem em si, compostos dentro da mesma página.
 
 ---
 
