@@ -1,8 +1,8 @@
 # 🛠️ Software Design Document (SDD)
 
 **Projeto:** Revela
-**Versão:** 1.2.0
-**Última atualização:** 2026-10-16
+**Versão:** 1.3.0
+**Última atualização:** 2026-11-19
 
 > 🤖 O `prd.md` responde **o que** o produto faz. Este documento responde **onde as coisas moram e como se chamam**.
 >
@@ -38,7 +38,8 @@ O `AGENTS.md` já existe na raiz (vem do template da disciplina) e aponta para `
 
 **Frontend:**
 
-* **Angular 22+**
+* **Angular 22**
+* **Guia de Estilo 2025:** Adotado o estilo conciso oficial do Angular (arquivos sem sufixo `.component` e classes de componentes sem sufixo `Component`, ex.: `app.ts` com classe `App`, `login-page.ts` com classe `LoginPage`)
 * **Arquitetura Standalone** (sem `NgModules`)
 * **Zoneless** (sem Zone.js)
 * **Signals** para gerenciamento de estado (`signal()`, `computed()`, `model()`, `effect()`)
@@ -46,17 +47,17 @@ O `AGENTS.md` já existe na raiz (vem do template da disciplina) e aponta para `
 * **Comunicação e DI:** `input()` e `output()` funcionais; injeção de dependências via `inject()`
 * **Deferrable Views (`@defer`):** Opcional, aplicado pontualmente onde houver ganho real de desempenho de carregamento
 * **Roteamento:** Lazy loading por rota de feature; `withComponentInputBinding()` para binding automático de parâmetros de rota em inputs; proteção de rotas exclusivamente com Functional Route Guards (`CanActivateFn`)
+* **PWA e Service Worker:** `@angular/service-worker`, `ngsw-config.json` e `manifest.webmanifest`, apontando para [`docs/design-tokens.md`](./design-tokens.md) para a identidade do PWA
 
 **Estilo:**
 
-* **Tailwind CSS**
+* **Tailwind CSS 4**
 * **Lucide Angular**, caso seja necessário para iconografia
 
 **Testes e Qualidade:**
 
-* **Testes unitários:** **Vitest** (runner nativo do Angular CLI, compatível com arquitetura Zoneless)
-* **Linter:** **ESLint** com regras oficiais `@angular-eslint`
-* *Nota:* A configuração fina de scripts de teste e lint será injetada na fase de setup (`/utf-setup`).
+* **Testes unitários:** **Vitest** (runner nativo do Angular CLI, compatível com arquitetura Zoneless) com **jsdom** como ambiente de simulação do DOM
+* **Linter e Formatação:** **ESLint** com regras oficiais `@angular-eslint`, integrado a **Prettier**, **EditorConfig** e **eslint-config-prettier** para desativação de regras estilísticas conflitantes
 
 **Dados Provisórios:**
 
@@ -108,21 +109,52 @@ O projeto utiliza um monorepo para manter frontend e o mock de backend no mesmo 
 
 ```text
 .
+├── .editorconfig
+├── .gitattributes
+├── .gitignore
+├── .prettierignore
+├── .prettierrc
 ├── AGENTS.md
 ├── README.md
 ├── package.json
+├── package-lock.json
 ├── docs/
-│   ├── prd.md
-│   └── architecture.md
+│   ├── architecture.md
+│   ├── checklist.md
+│   ├── design-tokens.md
+│   └── prd.md
+├── specs/
+│   └── README.md
 └── apps/
     ├── api/
+    │   ├── README.md
     │   └── db.json
     └── web/
+        ├── angular.json
+        ├── eslint.config.js
+        ├── ngsw-config.json
+        ├── package.json
+        ├── tsconfig.app.json
+        ├── tsconfig.json
+        ├── tsconfig.spec.json
+        ├── public/
+        │   ├── favicon.ico
+        │   ├── manifest.webmanifest
+        │   └── icons/
         └── src/
+            ├── index.html
+            ├── main.ts
+            ├── styles.css
             ├── environments/
             │   ├── environment.ts
             │   └── environment.development.ts
             └── app/
+                ├── app.config.ts
+                ├── app.css
+                ├── app.html
+                ├── app.routes.ts
+                ├── app.spec.ts
+                ├── app.ts
                 ├── core/
                 │   ├── data/
                 │   │   ├── models/       # TODOS os modelos e interfaces do sistema residem aqui
@@ -147,13 +179,17 @@ O projeto utiliza um monorepo para manter frontend e o mock de backend no mesmo 
 
 ### Atalhos na raiz (`package.json`)
 
-Nesta etapa, o `package.json` da raiz disponibiliza exclusivamente atalhos para execução das aplicações (os scripts de `test` e `lint` virão da etapa de setup):
+O `package.json` da raiz centraliza os scripts de execução, compilação, testes e formatação do monorepo:
 
 ```json
 {
   "scripts": {
-    "start": "npm --prefix apps/web start",
-    "api": "json-server apps/api/db.json --port 3000"
+    "start": "npm run start -w apps/web",
+    "build": "npm run build -w apps/web",
+    "test": "npm run test -w apps/web",
+    "lint": "npm run lint -w apps/web",
+    "api": "json-server apps/api/db.json --port 3000",
+    "format": "prettier --write ."
   }
 }
 ```
@@ -320,18 +356,10 @@ erDiagram
 
 ### 🗃️ 5.3. Mock de Dados (`db.json`)
 
-Durante a fase provisória, o formato dos dados é centralizado em `apps/api/db.json`:
+Durante a fase provisória, o formato dos dados é centralizado em `apps/api/db.json`. O arquivo nasce vazio no setup (`{}`), e cada coleção entra no arquivo através da história que a utiliza.
 
 ```json
-{
-  "users": [],
-  "groups": [],
-  "groupMembers": [],
-  "groupInvites": [],
-  "drawResults": [],
-  "drawExclusions": [],
-  "wishlistItems": []
-}
+{}
 ```
 
 > ⚠️ O `json-server` persiste alterações diretamente no arquivo `db.json` durante operações de escrita. Antes de commits, verificar alterações espúrias.
@@ -342,16 +370,16 @@ Durante a fase provisória, o formato dos dados é centralizado em `apps/api/db.
 
 As rotas são carregadas via lazy loading e utilizam `CanActivateFn` para controle de acesso:
 
-| Domínio | Rota | Page Component | Guard | Dados (Repository) | User Story |
+| Domínio | Rota | Page | Guard | Dados (Repository) | User Story |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| Autenticação | `/login` | `LoginPageComponent` | — | `AuthRepository` | US02 |
-| Autenticação | `/register` | `RegisterPageComponent` | — | `AuthRepository` | US01 |
-| Grupos | `/groups` | `GroupsListPageComponent` | `authGuard` | `GroupsRepository` | US03 |
-| Grupos | `/groups/new` | `GroupCreatePageComponent` | `authGuard` | `GroupsRepository` | US03 |
-| Grupos | `/groups/:id` | `GroupDetailPageComponent` | `authGuard` | `GroupsRepository` | US04, US06, US08 |
-| Grupos | `/groups/:id/draw` | `DrawResultPageComponent` | `authGuard` | `DrawRepository` | US07 |
-| Grupos | `/join/:code` | `JoinGroupPageComponent` | `authGuard` | `InvitesRepository` | US05 |
-| Desejos | `/groups/:id/wishlist` | `WishlistPageComponent` | `authGuard` | `WishlistRepository` | US09, US10 |
+| Autenticação | `/login` | `LoginPage` | — | `AuthRepository` | US02 |
+| Autenticação | `/register` | `RegisterPage` | — | `AuthRepository` | US01 |
+| Grupos | `/groups` | `GroupsListPage` | `authGuard` | `GroupsRepository` | US03 |
+| Grupos | `/groups/new` | `GroupCreatePage` | `authGuard` | `GroupsRepository` | US03 |
+| Grupos | `/groups/:id` | `GroupDetailPage` | `authGuard` | `GroupsRepository` | US04, US06, US08 |
+| Grupos | `/groups/:id/draw` | `DrawResultPage` | `authGuard` | `DrawRepository` | US07 |
+| Grupos | `/join/:code` | `JoinGroupPage` | `authGuard` | `InvitesRepository` | US05 |
+| Desejos | `/groups/:id/wishlist` | `WishlistPage` | `authGuard` | `WishlistRepository` | US09, US10 |
 
 ---
 
@@ -362,6 +390,7 @@ As rotas são carregadas via lazy loading e utilizam `CanActivateFn` para contro
 | 2026-08-26 | 1.0.0 | Versão inicial do SDD para o projeto Revela. |
 | 2026-10-12 | 1.1.0 | Alinhamento com `/utf-architecture`: Angular linha ativa com Zoneless; Vitest e ESLint formalizados; models centralizados em `core/data/models/`; `apps/api/` simplificado para `db.json`; status de grupos mapeado; interceptors/auth postergados para a Entrega 3. |
 | 2026-10-16 | 1.2.0 | Ajustes: tokens movidos para design-tokens.md; AGENTS.md referenciado sem reescrita; versão do Angular em linha. |
+| 2026-11-19 | 1.3.0 | Setup do projeto (/utf-setup): scripts reais da raiz integrados, stack complementada com Prettier (.prettierrc e .prettierignore), EditorConfig, eslint-config-prettier, jsdom e PWA/Service Worker; db.json inicializado vazio; árvore do projeto atualizada com arquivos de configuração e specs; adoção do guia de estilo 2025 (remoção do sufixo Component nas classes e rotas do §6). |
 
 ---
 

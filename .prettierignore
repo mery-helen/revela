@@ -1,0 +1,12 @@
+node_modules
+dist
+.angular
+package-lock.json
+docs/
+README.md
+AGENTS.md
+.agents/
+.github/
+.cursor/
+.opencode/
+CONTRIBUTING.md

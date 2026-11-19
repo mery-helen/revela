@@ -1,6 +1,6 @@
-﻿# 🎨 Design Tokens — Revela
+# 🎨 Design Tokens — Revela
 
-> Tokens visuais base do projeto. Devem ser refletidos no `tailwind.config` e respeitados por todos os componentes de `shared/`.
+> Tokens visuais base do projeto. Devem ser refletidos no bloco `@theme` em `apps/web/src/styles.css` e respeitados por todos os componentes de `shared/`.
 
 ---
 
@@ -55,7 +55,7 @@
 | `--radius-card` | `16px` (`rounded-2xl`) | Cards & Modais |
 | `--radius-button` | `12px` (`rounded-xl`) | Botões & Inputs |
 | `--radius-full` | `9999px` (`rounded-full`) | Badges & Avatares |
-| `--spacing-scale` | `4, 8, 12, 16, 24, 32, 40, 48, 64` | Escala base (mobile-first) |
+| `--spacing-scale` | `4, 8, 12, 16, 24, 32, 40, 48, 64` | Escala base (mobile-first) — *não declarado no `@theme` pois já é nativamente coberto pela escala padrão do Tailwind (múltiplos de 4)* |
 
 ---
 
@@ -92,7 +92,7 @@
 | `theme_color` | `#7D1242` |
 | `background_color` | `#FAF6F8` |
 | `display` | `standalone` |
-| `icons` | SVG presente estilizado (`🎁`) nas cores Marsala (`#7D1242`) e Pink (`#FBCFE8`) — múltiplos tamanhos (72, 96, 128, 144, 152, 192, 384, 512) |
+| `icons` | SVG presente estilizado (`🎁`) nas cores Marsala (`#7D1242`) e Pink (`#FBCFE8`) — múltiplos tamanhos (72, 96, 128, 144, 152, 192, 384, 512). Estado atual: provisório. PNGs padrão do schematic @angular/pwa (logo do Angular) em apps/web/public/icons/, a substituir. |
 | `start_url` | `/` |
 | `scope` | `/` |
 
@@ -130,3 +130,4 @@
 | Data | Versão | O que mudou |
 | :--- | :---: | :--- |
 | 2026-10-12 | 1.0.0 | Tokens iniciais: tipografia, paleta, formas, estados, breakpoints, PWA, ponto de desistência US06. |
+| 2026-11-19 | 1.0.1 | Alinhamento com o setup: tokens refletidos no bloco @theme do styles.css, escala de espaçamento coberta pelo Tailwind nativo, registro do estado provisório dos ícones PNG do PWA gerados pelo schematic @angular/pwa. |
