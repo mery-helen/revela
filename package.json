@@ -1,0 +1,21 @@
+{
+  "name": "revela-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "start": "npm run start -w apps/web",
+    "build": "npm run build -w apps/web",
+    "test": "npm run test -w apps/web",
+    "lint": "npm run lint -w apps/web",
+    "api": "json-server apps/api/db.json --port 3000",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "json-server": "1.0.0-beta.15",
+    "prettier": "^3.8.1",
+    "eslint-config-prettier": "^10.1.8"
+  }
+}
