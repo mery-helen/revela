@@ -2,3 +2,4 @@
 
 | Issue | Spec | Estado | Observação |
 | ----- | ---- | ------ | ---------- |
+| #3 | 3-criar-uma-conta | aprovada | — |

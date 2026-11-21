@@ -1,6 +1,6 @@
 ---
 issue: 3
-status: rascunho
+status: aprovada
 ---
 
 # Especificação da Feature — US01: Criar uma conta
