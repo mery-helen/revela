@@ -13,7 +13,7 @@ issue: 3
 
 ## Tarefas
 
-- [ ] **Tarefa 1 — Casca da aplicação e rota de cadastro** — Cobre: CA7. Teste primeiro: ao navegar para `/register`, a tela de cadastro é renderizada entre o cabeçalho e o rodapé. Entrega: shell da aplicação (cabeçalho, área central com `<router-outlet>`, rodapé), rota `/register` carregando `RegisterPage` e stubs de rota para `/groups` e `/login`.
+- [x] **Tarefa 1 — Casca da aplicação e rota de cadastro** — Cobre: CA7. Teste primeiro: ao navegar para `/register`, a tela de cadastro é renderizada entre o cabeçalho e o rodapé. Entrega: shell da aplicação (cabeçalho, área central com `<router-outlet>`, rodapé), rota `/register` carregando `RegisterPage` e stubs de rota para `/groups` e `/login`.
 
 - [ ] **Tarefa 2 — Gaveta de navegação móvel** — Cobre: CA8, CA8b. Teste primeiro: ao tocar no botão ☰ a gaveta abre com os links "Criar conta" e "Entrar"; ao tocar em um link, a gaveta fecha e a navegação ocorre. Entrega: botão de menu no cabeçalho, gaveta com os links "Criar conta" e "Entrar", comportamento de abrir/fechar.
 
