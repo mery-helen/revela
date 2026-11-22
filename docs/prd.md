@@ -1,4 +1,4 @@
-﻿# 📄 Product Requirements Document (PRD)
+# 📄 Product Requirements Document (PRD)
 
 **Projeto:** Revela
 
@@ -60,15 +60,15 @@
 
 ---
 
-### US01 — Criar uma conta · `M` · Status: `Ready`
+### US01 — Criar uma conta · `M` · Status: `Feito`
 
 **Como** visitante, **eu quero** criar uma conta **para que** eu possa criar ou participar de grupos de amigo secreto.
 
 **Critérios de aceite:**
 
-- [ ] **Dado** que preencho nome, e-mail e senha válidos, **quando** confirmo o cadastro, **então** minha conta é criada e sou redirecionado para meus grupos.
+- [x] **Dado** que preencho nome, e-mail e senha válidos, **quando** confirmo o cadastro, **então** minha conta é criada e sou redirecionado para meus grupos.
 
-- [ ] **Dado** que informo um e-mail já cadastrado, **quando** confirmo, **então** vejo a mensagem "Este e-mail já está em uso" e nada é gravado.
+- [x] **Dado** que informo um e-mail já cadastrado, **quando** confirmo, **então** vejo a mensagem "Este e-mail já está em uso" e nada é gravado.
 
 **Regras relacionadas:** RN01
 
