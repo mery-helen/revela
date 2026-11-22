@@ -1,3 +1,4 @@
+// TODO #4: Implementar tela de login com BaaS.
 import { Component } from '@angular/core';
 
 @Component({

@@ -1,3 +1,4 @@
+// TODO #5: Implementar tela de grupos com BaaS.
 import { Component } from '@angular/core';
 
 @Component({

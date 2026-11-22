@@ -202,7 +202,7 @@
 
 | ID | História | MoSCoW | Status |
 | :--- | :--- | :---: | :--- |
-| US01 | Criar uma conta | M | Ready |
+| US01 | Criar uma conta | M | Feito |
 | US02 | Fazer login | M | Ready |
 | US03 | Criar um grupo de amigo secreto | M | Ready |
 | US04 | Convidar participantes para o grupo | M | Ready |

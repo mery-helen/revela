@@ -1,4 +1,5 @@
-﻿import { HttpClient } from '@angular/common/http';
+// TODO #26: Substituir json-server pelo BaaS real.
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 
