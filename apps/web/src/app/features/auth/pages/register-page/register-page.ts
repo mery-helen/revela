@@ -1,6 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+
+import { AuthRepository } from '../../../../core/data/repositories/auth-repository';
+import { AuthSession } from '../../../../core/services/auth-session';
 
 const passwordsMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const password = control.get('password')?.value;
@@ -19,6 +22,10 @@ const passwordsMatchValidator: ValidatorFn = (control: AbstractControl): Validat
   templateUrl: './register-page.html',
 })
 export class RegisterPage {
+  private readonly authRepository = inject(AuthRepository);
+  private readonly authSession = inject(AuthSession);
+  private readonly router = inject(Router);
+
   protected readonly submitted = signal(false);
 
   protected readonly registerForm = new FormGroup(
@@ -48,6 +55,12 @@ export class RegisterPage {
     if (this.registerForm.invalid) {
       return;
     }
+
+    const { name, email, password } = this.registerForm.getRawValue();
+    this.authRepository.createAccount({ name, email, password }).subscribe((user) => {
+      this.authSession.setAuthenticatedUser(user);
+      void this.router.navigate(['/groups']);
+    });
   }
 
   protected shouldShowError(controlName: 'name' | 'email' | 'password' | 'confirmPassword'): boolean {

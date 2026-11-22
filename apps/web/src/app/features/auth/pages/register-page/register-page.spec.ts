@@ -1,15 +1,25 @@
 ﻿import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 
+import { environment } from '../../../../../environments/environment';
+import { AuthSession } from '../../../../core/services/auth-session';
 import { RegisterPage } from './register-page';
+
+@Component({ template: '' })
+class GroupsStub {}
 
 describe('RegisterPage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RegisterPage],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([{ path: 'groups', component: GroupsStub }]),
+      ],
     }).compileComponents();
   });
 
@@ -98,6 +108,56 @@ describe('RegisterPage', () => {
     expect(confirmPasswordError!.textContent?.trim()).toBe('As senhas não coincidem');
 
     httpTesting.expectNone(() => true);
+  });
+
+  it('should create account, authenticate person, and redirect to groups on valid submit (CA1)', async () => {
+    const fixture = TestBed.createComponent(RegisterPage);
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const router = TestBed.inject(Router);
+    const authSession = TestBed.inject(AuthSession);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const nameInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-name"]');
+    const emailInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-email"]');
+    const passwordInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-password"]');
+    const confirmPasswordInput = compiled.querySelector<HTMLInputElement>(
+      '[data-testid="input-confirm-password"]',
+    );
+    const submitButton = compiled.querySelector<HTMLButtonElement>('[data-testid="submit-register"]');
+
+    nameInput!.value = 'Maria';
+    nameInput!.dispatchEvent(new Event('input'));
+    emailInput!.value = 'maria@example.com';
+    emailInput!.dispatchEvent(new Event('input'));
+    passwordInput!.value = '123456';
+    passwordInput!.dispatchEvent(new Event('input'));
+    confirmPasswordInput!.value = '123456';
+    confirmPasswordInput!.dispatchEvent(new Event('input'));
+
+    submitButton!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const request = httpTesting.expectOne(`${environment.apiUrl}/users`);
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({
+      name: 'Maria',
+      email: 'maria@example.com',
+      password: '123456',
+    });
+
+    request.flush({ id: '1', name: 'Maria', email: 'maria@example.com', password: '123456' });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(authSession.authenticatedUser()).toEqual({
+      id: '1',
+      name: 'Maria',
+      email: 'maria@example.com',
+    });
+    expect(router.url).toBe('/groups');
   });
 
   it('should navigate to login page when tapping "Já tem uma conta? Faça login" (CA9)', async () => {
