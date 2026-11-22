@@ -27,7 +27,7 @@ issue: 3
 
 - [x] **Tarefa 7 — Cadastro com sucesso** — Cobre: CA1. Teste primeiro: submeter formulário válido cria a conta, autentica a pessoa e redireciona para a tela de grupos. Entrega: integração do formulário com `AuthRepository`, persistência da sessão autenticada e redirecionamento para `/groups`.
 
-- [ ] **Tarefa 8 — E-mail já cadastrado** — Cobre: CA2. Teste primeiro: submeter com e-mail já cadastrado (case-insensitive, ignorando espaços nas pontas) exibe "Este e-mail já está em uso" e nenhum registro é gravado. Entrega: tratamento de duplicidade no fluxo de cadastro.
+- [x] **Tarefa 8 — E-mail já cadastrado** — Cobre: CA2. Teste primeiro: submeter com e-mail já cadastrado (case-insensitive, ignorando espaços nas pontas) exibe "Este e-mail já está em uso" e nenhum registro é gravado. Entrega: tratamento de duplicidade no fluxo de cadastro.
 
 - [ ] **Tarefa 9 — Erro de servidor** — Cobre: CA5. Teste primeiro: falha do servidor exibe "Não foi possível conectar ao servidor. Tente novamente." no topo do formulário, preserva os dados digitados, não grava nada e reabilita o botão. Entrega: tratamento de erro no envio do cadastro.
 

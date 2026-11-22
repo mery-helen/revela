@@ -28,6 +28,11 @@
       @if (shouldShowError('email')) {
         <p data-testid="error-email" class="text-sm text-status-restriction-text">Informe um e-mail válido.</p>
       }
+      @if (duplicateEmail()) {
+        <p data-testid="error-email-registered" class="text-sm text-status-restriction-text">
+          Este e-mail já está em uso
+        </p>
+      }
     </div>
 
     <div class="flex flex-col gap-1">

@@ -140,6 +140,12 @@ describe('RegisterPage', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
+    const lookup = httpTesting.expectOne(`${environment.apiUrl}/users`);
+    expect(lookup.request.method).toBe('GET');
+    lookup.flush([]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
     const request = httpTesting.expectOne(`${environment.apiUrl}/users`);
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual({
@@ -158,6 +164,53 @@ describe('RegisterPage', () => {
       email: 'maria@example.com',
     });
     expect(router.url).toBe('/groups');
+  });
+
+  it('should show "Este e-mail já está em uso" and write nothing when the email is already registered (CA2)', async () => {
+    const fixture = TestBed.createComponent(RegisterPage);
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const router = TestBed.inject(Router);
+    const authSession = TestBed.inject(AuthSession);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const nameInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-name"]');
+    const emailInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-email"]');
+    const passwordInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-password"]');
+    const confirmPasswordInput = compiled.querySelector<HTMLInputElement>(
+      '[data-testid="input-confirm-password"]',
+    );
+    const submitButton = compiled.querySelector<HTMLButtonElement>('[data-testid="submit-register"]');
+
+    nameInput!.value = 'Maria';
+    nameInput!.dispatchEvent(new Event('input'));
+    emailInput!.value = 'MARIA@EXAMPLE.COM';
+    emailInput!.dispatchEvent(new Event('input'));
+    passwordInput!.value = '123456';
+    passwordInput!.dispatchEvent(new Event('input'));
+    confirmPasswordInput!.value = '123456';
+    confirmPasswordInput!.dispatchEvent(new Event('input'));
+
+    submitButton!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const lookup = httpTesting.expectOne(`${environment.apiUrl}/users`);
+    expect(lookup.request.method).toBe('GET');
+    lookup.flush([{ id: '1', name: 'Maria', email: 'maria@example.com', password: '123456' }]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const duplicateError = compiled.querySelector('[data-testid="error-email-registered"]');
+    expect(duplicateError).toBeTruthy();
+    expect(duplicateError!.textContent?.trim()).toBe('Este e-mail já está em uso');
+
+    httpTesting.expectNone(
+      (request) => request.method === 'POST' && request.url === `${environment.apiUrl}/users`,
+    );
+    expect(authSession.authenticatedUser()).toBeNull();
+    expect(router.url).not.toBe('/groups');
   });
 
   it('should navigate to login page when tapping "Já tem uma conta? Faça login" (CA9)', async () => {

@@ -27,6 +27,7 @@ export class RegisterPage {
   private readonly router = inject(Router);
 
   protected readonly submitted = signal(false);
+  protected readonly duplicateEmail = signal(false);
 
   protected readonly registerForm = new FormGroup(
     {
@@ -57,9 +58,18 @@ export class RegisterPage {
     }
 
     const { name, email, password } = this.registerForm.getRawValue();
-    this.authRepository.createAccount({ name, email, password }).subscribe((user) => {
-      this.authSession.setAuthenticatedUser(user);
-      void this.router.navigate(['/groups']);
+    this.duplicateEmail.set(false);
+
+    this.authRepository.isEmailRegistered(email).subscribe((isRegistered) => {
+      if (isRegistered) {
+        this.duplicateEmail.set(true);
+        return;
+      }
+
+      this.authRepository.createAccount({ name, email, password }).subscribe((user) => {
+        this.authSession.setAuthenticatedUser(user);
+        void this.router.navigate(['/groups']);
+      });
     });
   }
 
