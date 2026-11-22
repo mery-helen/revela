@@ -19,7 +19,7 @@ issue: 3
 
 - [x] **Tarefa 3 — Formulário de cadastro e validações de campo** — Cobre: CA3. Teste primeiro: submeter com campos inválidos ou vazios exibe uma mensagem de erro sob cada campo inválido e nenhuma requisição é enviada. Entrega: `RegisterPage` com formulário reativo (nome, e-mail, senha, confirmação de senha) e mensagens de erro por campo.
 
-- [ ] **Tarefa 4 — Validação de confirmação de senha** — Cobre: CA4. Teste primeiro: submeter com senha e confirmação diferentes exibe "As senhas não coincidem" abaixo do campo de confirmação. Entrega: validação de igualdade entre senha e confirmação no formulário.
+- [x] **Tarefa 4 — Validação de confirmação de senha** — Cobre: CA4. Teste primeiro: submeter com senha e confirmação diferentes exibe "As senhas não coincidem" abaixo do campo de confirmação. Entrega: validação de igualdade entre senha e confirmação no formulário.
 
 - [ ] **Tarefa 5 — Link para a tela de login** — Cobre: CA9. Teste primeiro: tocar em "Já tem uma conta? Faça login" leva para a tela de login. Entrega: link na tela de cadastro apontando para `/login`.
 

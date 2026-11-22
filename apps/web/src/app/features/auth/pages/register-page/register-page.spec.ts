@@ -62,4 +62,40 @@ describe('RegisterPage', () => {
 
     httpTesting.expectNone(() => true);
   });
+
+  it('should show "As senhas não coincidem" below confirm password when passwords differ on submit (CA4)', async () => {
+    const fixture = TestBed.createComponent(RegisterPage);
+    const httpTesting = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const nameInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-name"]');
+    const emailInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-email"]');
+    const passwordInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-password"]');
+    const confirmPasswordInput = compiled.querySelector<HTMLInputElement>(
+      '[data-testid="input-confirm-password"]',
+    );
+    const submitButton = compiled.querySelector<HTMLButtonElement>('[data-testid="submit-register"]');
+
+    nameInput!.value = 'Maria';
+    nameInput!.dispatchEvent(new Event('input'));
+    emailInput!.value = 'maria@example.com';
+    emailInput!.dispatchEvent(new Event('input'));
+    passwordInput!.value = '123456';
+    passwordInput!.dispatchEvent(new Event('input'));
+    confirmPasswordInput!.value = '654321';
+    confirmPasswordInput!.dispatchEvent(new Event('input'));
+
+    submitButton!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const confirmPasswordError = compiled.querySelector('[data-testid="error-confirm-password"]');
+
+    expect(confirmPasswordError).toBeTruthy();
+    expect(confirmPasswordError!.textContent?.trim()).toBe('As senhas não coincidem');
+
+    httpTesting.expectNone(() => true);
+  });
 });

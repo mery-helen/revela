@@ -54,7 +54,13 @@
         class="rounded-button border border-card-border bg-card px-4 py-3 text-text-primary"
       />
       @if (shouldShowError('confirmPassword')) {
-        <p data-testid="error-confirm-password" class="text-sm text-status-restriction-text">Confirmação de senha é obrigatória.</p>
+        <p data-testid="error-confirm-password" class="text-sm text-status-restriction-text">
+          @if (registerForm.controls.confirmPassword.hasError('required')) {
+            Confirmação de senha é obrigatória.
+          } @else if (registerForm.hasError('passwordMismatch')) {
+            As senhas não coincidem
+          }
+        </p>
       }
     </div>
 
