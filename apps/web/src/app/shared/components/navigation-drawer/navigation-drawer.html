@@ -1,0 +1,22 @@
+<nav
+  data-testid="navigation-drawer"
+  class="bg-card border-b border-card-border px-4 py-3 flex flex-col gap-2"
+  aria-label="Navegação"
+>
+  <a
+    data-testid="drawer-link-register"
+    routerLink="/register"
+    class="text-text-primary font-label py-2"
+    (click)="close.emit()"
+  >
+    Criar conta
+  </a>
+  <a
+    data-testid="drawer-link-login"
+    routerLink="/login"
+    class="text-text-primary font-label py-2"
+    (click)="close.emit()"
+  >
+    Entrar
+  </a>
+</nav>

@@ -1,5 +1,8 @@
 <main class="min-h-screen bg-surface flex flex-col">
-  <app-header />
+  <app-header (menuToggle)="toggleDrawer()" />
+  @if (isDrawerOpen()) {
+    <app-navigation-drawer (close)="closeDrawer()" />
+  }
   <section class="flex-1 p-4">
     <router-outlet />
   </section>
