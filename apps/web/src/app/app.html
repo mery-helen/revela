@@ -1,9 +1,10 @@
-<main class="bg-surface p-8">
-  <h1 class="text-3xl font-bold text-text-primary">Tema do projeto</h1>
-  <div class="mt-6 flex gap-4">
-    <button class="rounded-button bg-primary px-4 py-2 text-white">Primária</button>
-    <button class="rounded-button bg-accent px-4 py-2 text-text-primary">Acento</button>
-    <button class="rounded-button border border-primary px-4 py-2 text-primary">Contorno</button>
-  </div>
+<main class="min-h-screen bg-surface flex flex-col">
+  <app-header (menuToggle)="toggleDrawer()" />
+  @if (isDrawerOpen()) {
+    <app-navigation-drawer (closed)="closeDrawer()" />
+  }
+  <section class="flex-1 p-4">
+    <router-outlet />
+  </section>
+  <app-footer />
 </main>
-<router-outlet />
