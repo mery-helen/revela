@@ -33,7 +33,7 @@ issue: 3
 
 - [x] **Tarefa 10 — Prevenção de duplo clique** — Cobre: CA6. Teste primeiro: enquanto a requisição está em andamento o botão "Criar conta" fica desabilitado e apenas uma requisição é enviada. Entrega: estado de envio no formulário que bloqueia submissões duplicadas.
 
-- [ ] **Tarefa 11 — Renomear o output da gaveta** — Cobre: CA8b. Teste primeiro: prova que ao tocar em um link a gaveta fecha usando o output renomeado (closed), sem mudar o comportamento. Arquivos previstos: navigation-drawer.ts, app.html e os specs afetados.
+- [x] **Tarefa 11 — Renomear o output da gaveta** — Cobre: CA8b. Teste primeiro: prova que ao tocar em um link a gaveta fecha usando o output renomeado (closed), sem mudar o comportamento. Arquivos previstos: navigation-drawer.ts, app.html e os specs afetados.
 
 ## Critérios sem tarefa
 

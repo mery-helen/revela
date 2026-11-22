@@ -7,5 +7,6 @@ import { RouterLink } from '@angular/router';
   templateUrl: './navigation-drawer.html',
 })
 export class NavigationDrawer {
-  readonly close = output<void>();
+  // Renomeado de `close` para `closed` para atender à regra @angular-eslint/no-output-native
+  readonly closed = output<void>();
 }
