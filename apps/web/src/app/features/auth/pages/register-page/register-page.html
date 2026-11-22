@@ -78,7 +78,8 @@
     <button
       type="submit"
       data-testid="submit-register"
-      class="rounded-button bg-primary px-4 py-3 font-button text-card"
+      [disabled]="isSubmitting()"
+      class="rounded-button bg-primary px-4 py-3 font-button text-card disabled:cursor-not-allowed disabled:bg-card-border disabled:text-text-secondary"
     >
       Criar conta
     </button>

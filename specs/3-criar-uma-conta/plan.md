@@ -31,7 +31,7 @@ issue: 3
 
 - [x] **Tarefa 9 — Erro de servidor** — Cobre: CA5. Teste primeiro: falha do servidor exibe "Não foi possível conectar ao servidor. Tente novamente." no topo do formulário, preserva os dados digitados, não grava nada e reabilita o botão. Entrega: tratamento de erro no envio do cadastro.
 
-- [ ] **Tarefa 10 — Prevenção de duplo clique** — Cobre: CA6. Teste primeiro: enquanto a requisição está em andamento o botão "Criar conta" fica desabilitado e apenas uma requisição é enviada. Entrega: estado de envio no formulário que bloqueia submissões duplicadas.
+- [x] **Tarefa 10 — Prevenção de duplo clique** — Cobre: CA6. Teste primeiro: enquanto a requisição está em andamento o botão "Criar conta" fica desabilitado e apenas uma requisição é enviada. Entrega: estado de envio no formulário que bloqueia submissões duplicadas.
 
 ## Critérios sem tarefa
 

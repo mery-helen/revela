@@ -255,17 +255,13 @@ describe('RegisterPage', () => {
       'Não foi possível conectar ao servidor. Tente novamente.',
     );
 
-    // Preserve input values
     expect(nameInput!.value).toBe('Maria');
     expect(emailInput!.value).toBe('maria@example.com');
     expect(passwordInput!.value).toBe('123456');
     expect(confirmPasswordInput!.value).toBe('123456');
 
-    // Write nothing / session clean / no navigation
     expect(authSession.authenticatedUser()).toBeNull();
     expect(router.url).not.toBe('/groups');
-
-    // Submit button re-enabled / normal state
     expect(submitButton!.disabled).toBe(false);
   });
 
@@ -325,6 +321,63 @@ describe('RegisterPage', () => {
     expect(authSession.authenticatedUser()).toBeNull();
     expect(router.url).not.toBe('/groups');
     expect(submitButton!.disabled).toBe(false);
+  });
+
+  it('should disable "Criar conta" button and send exactly one request during pending submission (CA6)', async () => {
+    const fixture = TestBed.createComponent(RegisterPage);
+    const httpTesting = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const nameInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-name"]');
+    const emailInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-email"]');
+    const passwordInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-password"]');
+    const confirmPasswordInput = compiled.querySelector<HTMLInputElement>(
+      '[data-testid="input-confirm-password"]',
+    );
+    const submitButton = compiled.querySelector<HTMLButtonElement>('[data-testid="submit-register"]');
+
+    nameInput!.value = 'Maria';
+    nameInput!.dispatchEvent(new Event('input'));
+    emailInput!.value = 'maria@example.com';
+    emailInput!.dispatchEvent(new Event('input'));
+    passwordInput!.value = '123456';
+    passwordInput!.dispatchEvent(new Event('input'));
+    confirmPasswordInput!.value = '123456';
+    confirmPasswordInput!.dispatchEvent(new Event('input'));
+
+    submitButton!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(submitButton!.disabled).toBe(true);
+
+    submitButton!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const lookupRequests = httpTesting.match(`${environment.apiUrl}/users`);
+    expect(lookupRequests.length).toBe(1);
+
+    lookupRequests[0].flush([]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(submitButton!.disabled).toBe(true);
+
+    submitButton!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const createRequests = httpTesting.match(
+      (req) => req.method === 'POST' && req.url === `${environment.apiUrl}/users`,
+    );
+    expect(createRequests.length).toBe(1);
+
+    createRequests[0].flush({ id: '1', name: 'Maria', email: 'maria@example.com', password: '123456' });
+    fixture.detectChanges();
+    await fixture.whenStable();
   });
 
   it('should navigate to login page when tapping "Já tem uma conta? Faça login" (CA9)', async () => {
