@@ -23,7 +23,7 @@ issue: 3
 
 - [x] **Tarefa 5 — Link para a tela de login** — Cobre: CA9. Teste primeiro: tocar em "Já tem uma conta? Faça login" leva para a tela de login. Entrega: link na tela de cadastro apontando para `/login`.
 
-- [ ] **Tarefa 6 — Modelo e repositório de autenticação** — Cobre: passo técnico (destrava CA1, CA2, CA5, CA6). Teste primeiro: o repositório cria uma conta enviando os dados e verifica e-mail já cadastrado de forma case-insensitive e ignorando espaços nas pontas. Entrega: modelo `User` em `core/data/models`, `AuthRepository` em `core/data/repositories`, `provideHttpClient()` no `app.config`.
+- [x] **Tarefa 6 — Modelo e repositório de autenticação** — Cobre: passo técnico (destrava CA1, CA2, CA5, CA6). Teste primeiro: o repositório cria uma conta enviando os dados e verifica e-mail já cadastrado de forma case-insensitive e ignorando espaços nas pontas. Entrega: modelo `User` em `core/data/models`, `AuthRepository` em `core/data/repositories`, `provideHttpClient()` no `app.config`.
 
 - [ ] **Tarefa 7 — Cadastro com sucesso** — Cobre: CA1. Teste primeiro: submeter formulário válido cria a conta, autentica a pessoa e redireciona para a tela de grupos. Entrega: integração do formulário com `AuthRepository`, persistência da sessão autenticada e redirecionamento para `/groups`.
 
