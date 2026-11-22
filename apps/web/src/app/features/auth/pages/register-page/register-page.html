@@ -2,6 +2,12 @@
   <h1 class="text-2xl font-heading text-text-primary">Criar conta</h1>
 
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="mt-6 flex flex-col gap-4" novalidate>
+    @if (serverError()) {
+      <p data-testid="error-server" class="text-sm text-status-restriction-text">
+        Não foi possível conectar ao servidor. Tente novamente.
+      </p>
+    }
+
     <div class="flex flex-col gap-1">
       <label for="name" class="text-sm font-label text-text-primary">Nome</label>
       <input

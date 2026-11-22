@@ -28,6 +28,7 @@ export class RegisterPage {
 
   protected readonly submitted = signal(false);
   protected readonly duplicateEmail = signal(false);
+  protected readonly serverError = signal(false);
 
   protected readonly registerForm = new FormGroup(
     {
@@ -59,17 +60,28 @@ export class RegisterPage {
 
     const { name, email, password } = this.registerForm.getRawValue();
     this.duplicateEmail.set(false);
+    this.serverError.set(false);
 
-    this.authRepository.isEmailRegistered(email).subscribe((isRegistered) => {
-      if (isRegistered) {
-        this.duplicateEmail.set(true);
-        return;
-      }
+    this.authRepository.isEmailRegistered(email).subscribe({
+      next: (isRegistered) => {
+        if (isRegistered) {
+          this.duplicateEmail.set(true);
+          return;
+        }
 
-      this.authRepository.createAccount({ name, email, password }).subscribe((user) => {
-        this.authSession.setAuthenticatedUser(user);
-        void this.router.navigate(['/groups']);
-      });
+        this.authRepository.createAccount({ name, email, password }).subscribe({
+          next: (user) => {
+            this.authSession.setAuthenticatedUser(user);
+            void this.router.navigate(['/groups']);
+          },
+          error: () => {
+            this.serverError.set(true);
+          },
+        });
+      },
+      error: () => {
+        this.serverError.set(true);
+      },
     });
   }
 

@@ -1,4 +1,4 @@
-﻿import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -211,6 +211,120 @@ describe('RegisterPage', () => {
     );
     expect(authSession.authenticatedUser()).toBeNull();
     expect(router.url).not.toBe('/groups');
+  });
+
+  it('should display "Não foi possível conectar ao servidor. Tente novamente." at the top of the form, preserve input values, write nothing, and keep button enabled on server error (CA5)', async () => {
+    const fixture = TestBed.createComponent(RegisterPage);
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const router = TestBed.inject(Router);
+    const authSession = TestBed.inject(AuthSession);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const nameInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-name"]');
+    const emailInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-email"]');
+    const passwordInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-password"]');
+    const confirmPasswordInput = compiled.querySelector<HTMLInputElement>(
+      '[data-testid="input-confirm-password"]',
+    );
+    const submitButton = compiled.querySelector<HTMLButtonElement>('[data-testid="submit-register"]');
+
+    nameInput!.value = 'Maria';
+    nameInput!.dispatchEvent(new Event('input'));
+    emailInput!.value = 'maria@example.com';
+    emailInput!.dispatchEvent(new Event('input'));
+    passwordInput!.value = '123456';
+    passwordInput!.dispatchEvent(new Event('input'));
+    confirmPasswordInput!.value = '123456';
+    confirmPasswordInput!.dispatchEvent(new Event('input'));
+
+    submitButton!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const lookup = httpTesting.expectOne(`${environment.apiUrl}/users`);
+    expect(lookup.request.method).toBe('GET');
+    lookup.flush('Server Error', { status: 500, statusText: 'Internal Server Error' });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const serverError = compiled.querySelector('[data-testid="error-server"]');
+    expect(serverError).toBeTruthy();
+    expect(serverError!.textContent?.trim()).toBe(
+      'Não foi possível conectar ao servidor. Tente novamente.',
+    );
+
+    // Preserve input values
+    expect(nameInput!.value).toBe('Maria');
+    expect(emailInput!.value).toBe('maria@example.com');
+    expect(passwordInput!.value).toBe('123456');
+    expect(confirmPasswordInput!.value).toBe('123456');
+
+    // Write nothing / session clean / no navigation
+    expect(authSession.authenticatedUser()).toBeNull();
+    expect(router.url).not.toBe('/groups');
+
+    // Submit button re-enabled / normal state
+    expect(submitButton!.disabled).toBe(false);
+  });
+
+  it('should display "Não foi possível conectar ao servidor. Tente novamente." when account creation fails with server error (CA5)', async () => {
+    const fixture = TestBed.createComponent(RegisterPage);
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const router = TestBed.inject(Router);
+    const authSession = TestBed.inject(AuthSession);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const nameInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-name"]');
+    const emailInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-email"]');
+    const passwordInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-password"]');
+    const confirmPasswordInput = compiled.querySelector<HTMLInputElement>(
+      '[data-testid="input-confirm-password"]',
+    );
+    const submitButton = compiled.querySelector<HTMLButtonElement>('[data-testid="submit-register"]');
+
+    nameInput!.value = 'Maria';
+    nameInput!.dispatchEvent(new Event('input'));
+    emailInput!.value = 'maria@example.com';
+    emailInput!.dispatchEvent(new Event('input'));
+    passwordInput!.value = '123456';
+    passwordInput!.dispatchEvent(new Event('input'));
+    confirmPasswordInput!.value = '123456';
+    confirmPasswordInput!.dispatchEvent(new Event('input'));
+
+    submitButton!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const lookup = httpTesting.expectOne(`${environment.apiUrl}/users`);
+    expect(lookup.request.method).toBe('GET');
+    lookup.flush([]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const createRequest = httpTesting.expectOne(`${environment.apiUrl}/users`);
+    expect(createRequest.request.method).toBe('POST');
+    createRequest.flush('Server Error', { status: 500, statusText: 'Internal Server Error' });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const serverError = compiled.querySelector('[data-testid="error-server"]');
+    expect(serverError).toBeTruthy();
+    expect(serverError!.textContent?.trim()).toBe(
+      'Não foi possível conectar ao servidor. Tente novamente.',
+    );
+
+    expect(nameInput!.value).toBe('Maria');
+    expect(emailInput!.value).toBe('maria@example.com');
+    expect(passwordInput!.value).toBe('123456');
+    expect(confirmPasswordInput!.value).toBe('123456');
+
+    expect(authSession.authenticatedUser()).toBeNull();
+    expect(router.url).not.toBe('/groups');
+    expect(submitButton!.disabled).toBe(false);
   });
 
   it('should navigate to login page when tapping "Já tem uma conta? Faça login" (CA9)', async () => {
