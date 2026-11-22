@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 const passwordsMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const password = control.get('password')?.value;
@@ -14,7 +15,7 @@ const passwordsMatchValidator: ValidatorFn = (control: AbstractControl): Validat
 
 @Component({
   selector: 'app-register-page',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './register-page.html',
 })
 export class RegisterPage {

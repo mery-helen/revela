@@ -1,6 +1,7 @@
 ﻿import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
 
 import { RegisterPage } from './register-page';
 
@@ -8,7 +9,7 @@ describe('RegisterPage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RegisterPage],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     }).compileComponents();
   });
 
@@ -97,5 +98,36 @@ describe('RegisterPage', () => {
     expect(confirmPasswordError!.textContent?.trim()).toBe('As senhas não coincidem');
 
     httpTesting.expectNone(() => true);
+  });
+
+  it('should navigate to login page when tapping "Já tem uma conta? Faça login" (CA9)', async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [RegisterPage],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([{ path: 'login', component: RegisterPage }]),
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(RegisterPage);
+    const router = TestBed.inject(Router);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const loginLink = Array.from(compiled.querySelectorAll('a')).find(
+      (anchor) => anchor.textContent?.trim() === 'Já tem uma conta? Faça login',
+    );
+
+    expect(loginLink).toBeTruthy();
+    expect(loginLink!.getAttribute('href')).toBe('/login');
+
+    loginLink!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(router.url).toBe('/login');
   });
 });

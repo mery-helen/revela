@@ -21,7 +21,7 @@ issue: 3
 
 - [x] **Tarefa 4 — Validação de confirmação de senha** — Cobre: CA4. Teste primeiro: submeter com senha e confirmação diferentes exibe "As senhas não coincidem" abaixo do campo de confirmação. Entrega: validação de igualdade entre senha e confirmação no formulário.
 
-- [ ] **Tarefa 5 — Link para a tela de login** — Cobre: CA9. Teste primeiro: tocar em "Já tem uma conta? Faça login" leva para a tela de login. Entrega: link na tela de cadastro apontando para `/login`.
+- [x] **Tarefa 5 — Link para a tela de login** — Cobre: CA9. Teste primeiro: tocar em "Já tem uma conta? Faça login" leva para a tela de login. Entrega: link na tela de cadastro apontando para `/login`.
 
 - [ ] **Tarefa 6 — Modelo e repositório de autenticação** — Cobre: passo técnico (destrava CA1, CA2, CA5, CA6). Teste primeiro: o repositório cria uma conta enviando os dados e verifica e-mail já cadastrado de forma case-insensitive e ignorando espaços nas pontas. Entrega: modelo `User` em `core/data/models`, `AuthRepository` em `core/data/repositories`, `provideHttpClient()` no `app.config`.
 
