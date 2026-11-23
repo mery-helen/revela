@@ -96,4 +96,44 @@ describe('LoginPage', () => {
 
     httpTesting.expectNone(() => true);
   });
+
+  it('should show "E-mail ou senha inválidos", stay on login, and preserve typed values when credentials are invalid (CA2)', async () => {
+    const fixture = TestBed.createComponent(LoginPage);
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const router = TestBed.inject(Router);
+    const authSession = TestBed.inject(AuthSession);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const emailInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-email"]');
+    const passwordInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-password"]');
+    const submitButton = compiled.querySelector<HTMLButtonElement>('[data-testid="submit-login"]');
+
+    emailInput!.value = 'naoexiste@example.com';
+    emailInput!.dispatchEvent(new Event('input'));
+    passwordInput!.value = '123456';
+    passwordInput!.dispatchEvent(new Event('input'));
+
+    submitButton!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const request = httpTesting.expectOne(`${environment.apiUrl}/users`);
+    expect(request.request.method).toBe('GET');
+    request.flush([]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const invalidCredentialsError = compiled.querySelector(
+      '[data-testid="error-invalid-credentials"]',
+    );
+
+    expect(invalidCredentialsError).toBeTruthy();
+    expect(invalidCredentialsError!.textContent?.trim()).toBe('E-mail ou senha inválidos');
+    expect(router.url).not.toBe('/groups');
+    expect(emailInput!.value).toBe('naoexiste@example.com');
+    expect(passwordInput!.value).toBe('123456');
+    expect(authSession.authenticatedUser()).toBeNull();
+  });
 });

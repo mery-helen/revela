@@ -8,12 +8,6 @@
       </p>
     }
 
-    @if (invalidCredentials()) {
-      <p data-testid="error-invalid-credentials" class="text-sm text-status-restriction-text">
-        E-mail ou senha inválidos
-      </p>
-    }
-
     <div class="flex flex-col gap-1">
       <label for="email" class="text-sm font-label text-text-primary">E-mail</label>
       <input
@@ -51,6 +45,12 @@
       Entrar
     </button>
   </form>
+
+  @if (invalidCredentials()) {
+    <p data-testid="error-invalid-credentials" class="mt-4 text-sm text-status-restriction-text">
+      E-mail ou senha inválidos
+    </p>
+  }
 
   <p class="mt-6 text-center text-sm text-text-secondary">
     <a routerLink="/register" class="text-primary font-label">Não tem conta? Criar conta</a>

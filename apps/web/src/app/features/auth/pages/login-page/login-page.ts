@@ -51,7 +51,11 @@ export class LoginPage {
         if (user) {
           this.authSession.setAuthenticatedUser(user);
           void this.router.navigate(['/groups']);
+          this.isSubmitting.set(false);
+          return;
         }
+
+        this.invalidCredentials.set(true);
         this.isSubmitting.set(false);
       },
       error: () => {

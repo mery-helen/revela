@@ -23,7 +23,7 @@ issue: 4
 
 - [x] **Tarefa 4 — Login com sucesso** — Cobre: CA1. Teste primeiro: submeter com e-mail existente (case-insensitive, ignorando espaços nas pontas) e senha correta autentica a pessoa e redireciona para `/groups`. Entrega: integração do formulário com `AuthRepository.signIn`, `AuthSession` e `Router`.
 
-- [ ] **Tarefa 5 — Credenciais inválidas** — Cobre: CA2. Teste primeiro: submeter com e-mail inexistente ou senha divergente exibe "E-mail ou senha inválidos" abaixo do formulário, permanece em `/login` e preserva os valores digitados. Entrega: tratamento do retorno `null` do repositório.
+- [x] **Tarefa 5 — Credenciais inválidas** — Cobre: CA2. Teste primeiro: submeter com e-mail inexistente ou senha divergente exibe "E-mail ou senha inválidos" abaixo do formulário, permanece em `/login` e preserva os valores digitados. Entrega: tratamento do retorno `null` do repositório.
 
 - [ ] **Tarefa 6 — Erro de servidor** — Cobre: CA4. Teste primeiro: falha do servidor (500/timeout) exibe "Não foi possível conectar ao servidor. Tente novamente." no topo do formulário, preserva os dados digitados, não autentica e reabilita o botão. Entrega: tratamento de erro HTTP no envio do login.
 
