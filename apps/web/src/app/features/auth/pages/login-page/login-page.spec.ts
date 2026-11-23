@@ -11,6 +11,9 @@ import { LoginPage } from './login-page';
 @Component({ template: '' })
 class GroupsStub {}
 
+@Component({ template: '' })
+class RegisterStub {}
+
 describe('LoginPage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -212,5 +215,36 @@ describe('LoginPage', () => {
     await fixture.whenStable();
 
     httpTesting.expectNone(`${environment.apiUrl}/users`);
+  });
+
+  it('should navigate to register page when tapping "Não tem conta? Criar conta" (CA7)', async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [LoginPage],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([{ path: 'register', component: RegisterStub }]),
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(LoginPage);
+    const router = TestBed.inject(Router);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const registerLink = Array.from(compiled.querySelectorAll('a')).find(
+      (anchor) => anchor.textContent?.trim() === 'Não tem conta? Criar conta',
+    );
+
+    expect(registerLink).toBeTruthy();
+    expect(registerLink!.getAttribute('href')).toBe('/register');
+
+    registerLink!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(router.url).toBe('/register');
   });
 });
