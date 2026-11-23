@@ -19,7 +19,7 @@ issue: 4
 
 - [x] **Tarefa 2 — Rota de login na casca** — Cobre: CA6. Teste primeiro: ao navegar para `/login`, a tela de login é renderizada entre o cabeçalho e o rodapé. Entrega: `LoginPage` com `data-page="login"` (já roteada) verificada no `app.spec.ts`.
 
-- [ ] **Tarefa 3 — Formulário de login e validações de campo** — Cobre: CA3. Teste primeiro: submeter com campos vazios ou e-mail fora do padrão exibe mensagem de erro sob cada campo inválido e nenhuma requisição é enviada. Entrega: `LoginPage` com formulário reativo (e-mail, senha) e mensagens de erro por campo.
+- [x] **Tarefa 3 — Formulário de login e validações de campo** — Cobre: CA3. Teste primeiro: submeter com campos vazios ou e-mail fora do padrão exibe mensagem de erro sob cada campo inválido e nenhuma requisição é enviada. Entrega: `LoginPage` com formulário reativo (e-mail, senha) e mensagens de erro por campo.
 
 - [ ] **Tarefa 4 — Login com sucesso** — Cobre: CA1. Teste primeiro: submeter com e-mail existente (case-insensitive, ignorando espaços nas pontas) e senha correta autentica a pessoa e redireciona para `/groups`. Entrega: integração do formulário com `AuthRepository.signIn`, `AuthSession` e `Router`.
 
