@@ -1,4 +1,4 @@
-﻿import { provideHttpClient } from '@angular/common/http';
+﻿import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
@@ -81,5 +81,82 @@ describe('AuthRepository', () => {
     request.flush(users);
 
     expect(isRegistered).toBe(false);
+  });
+
+  it('should sign in a user whose email matches case-insensitively and ignoring surrounding spaces when the password is identical', () => {
+    let signedInUser: User | null | undefined;
+
+    repository.signIn('  MARIA@EXAMPLE.COM  ', '123456').subscribe((user) => {
+      signedInUser = user;
+    });
+
+    const request = httpTesting.expectOne(`${environment.apiUrl}/users`);
+    expect(request.request.method).toBe('GET');
+
+    const users: StoredUser[] = [
+      { id: '1', name: 'Maria', email: 'maria@example.com', password: '123456' },
+    ];
+    request.flush(users);
+
+    expect(signedInUser).toEqual<User>({ id: '1', name: 'Maria', email: 'maria@example.com' });
+    expect(signedInUser).not.toHaveProperty('password');
+  });
+
+  it('should return null when signing in with an email that does not exist', () => {
+    let signedInUser: User | null | undefined;
+
+    repository.signIn('outro@example.com', '123456').subscribe((user) => {
+      signedInUser = user;
+    });
+
+    const request = httpTesting.expectOne(`${environment.apiUrl}/users`);
+    expect(request.request.method).toBe('GET');
+
+    const users: StoredUser[] = [
+      { id: '1', name: 'Maria', email: 'maria@example.com', password: '123456' },
+    ];
+    request.flush(users);
+
+    expect(signedInUser).toBeNull();
+  });
+
+  it('should return null when signing in with a password that does not match', () => {
+    let signedInUser: User | null | undefined;
+
+    repository.signIn('maria@example.com', 'wrong-password').subscribe((user) => {
+      signedInUser = user;
+    });
+
+    const request = httpTesting.expectOne(`${environment.apiUrl}/users`);
+    expect(request.request.method).toBe('GET');
+
+    const users: StoredUser[] = [
+      { id: '1', name: 'Maria', email: 'maria@example.com', password: '123456' },
+    ];
+    request.flush(users);
+
+    expect(signedInUser).toBeNull();
+  });
+
+  it('should propagate an HTTP error through the error callback when signing in', () => {
+    let emittedUser: User | null | undefined;
+    let receivedError: HttpErrorResponse | undefined;
+
+    repository.signIn('maria@example.com', '123456').subscribe({
+      next: (user) => {
+        emittedUser = user;
+      },
+      error: (error: HttpErrorResponse) => {
+        receivedError = error;
+      },
+    });
+
+    const request = httpTesting.expectOne(`${environment.apiUrl}/users`);
+    expect(request.request.method).toBe('GET');
+    request.flush('Server Error', { status: 500, statusText: 'Internal Server Error' });
+
+    expect(emittedUser).toBeUndefined();
+    expect(receivedError).toBeInstanceOf(HttpErrorResponse);
+    expect(receivedError?.status).toBe(500);
   });
 });

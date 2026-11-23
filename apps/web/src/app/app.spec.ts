@@ -40,6 +40,31 @@ describe('App', () => {
     expect(footerPos & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
   });
 
+  it('should render login page between header and footer when navigating to /login (CA6)', async () => {
+    const fixture = TestBed.createComponent(App);
+    const router = TestBed.inject(Router);
+
+    await router.navigateByUrl('/login');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const header = compiled.querySelector('header');
+    const footer = compiled.querySelector('footer');
+    const loginPage = compiled.querySelector('[data-page="login"]');
+
+    expect(header).toBeTruthy();
+    expect(footer).toBeTruthy();
+    expect(loginPage).toBeTruthy();
+
+    const headerPos = header!.compareDocumentPosition(loginPage!);
+    const footerPos = footer!.compareDocumentPosition(loginPage!);
+
+    expect(headerPos & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(footerPos & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
+  });
+
   it('should open drawer with "Criar conta" and "Entrar" links when tapping ☰ button (CA8)', async () => {
     const fixture = TestBed.createComponent(App);
     const router = TestBed.inject(Router);
