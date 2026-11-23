@@ -177,4 +177,40 @@ describe('LoginPage', () => {
     expect(router.url).not.toBe('/groups');
     expect(submitButton!.disabled).toBe(false);
   });
+
+  it('should disable "Entrar" button and send exactly one request during pending submission (CA5)', async () => {
+    const fixture = TestBed.createComponent(LoginPage);
+    const httpTesting = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const emailInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-email"]');
+    const passwordInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-password"]');
+    const submitButton = compiled.querySelector<HTMLButtonElement>('[data-testid="submit-login"]');
+
+    emailInput!.value = 'maria@example.com';
+    emailInput!.dispatchEvent(new Event('input'));
+    passwordInput!.value = '123456';
+    passwordInput!.dispatchEvent(new Event('input'));
+
+    submitButton!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(submitButton!.disabled).toBe(true);
+
+    submitButton!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const requests = httpTesting.match(`${environment.apiUrl}/users`);
+    expect(requests.length).toBe(1);
+
+    requests[0].flush([{ id: '1', name: 'Maria', email: 'maria@example.com', password: '123456' }]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    httpTesting.expectNone(`${environment.apiUrl}/users`);
+  });
 });
