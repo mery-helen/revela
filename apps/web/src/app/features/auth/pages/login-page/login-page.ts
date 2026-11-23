@@ -40,6 +40,25 @@ export class LoginPage {
     if (this.loginForm.invalid) {
       return;
     }
+
+    const { email, password } = this.loginForm.getRawValue();
+    this.invalidCredentials.set(false);
+    this.serverError.set(false);
+    this.isSubmitting.set(true);
+
+    this.authRepository.signIn(email, password).subscribe({
+      next: (user) => {
+        if (user) {
+          this.authSession.setAuthenticatedUser(user);
+          void this.router.navigate(['/groups']);
+        }
+        this.isSubmitting.set(false);
+      },
+      error: () => {
+        this.serverError.set(true);
+        this.isSubmitting.set(false);
+      },
+    });
   }
 
   protected shouldShowError(controlName: 'email' | 'password'): boolean {

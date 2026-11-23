@@ -2,8 +2,10 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 
+import { environment } from '../../../../../environments/environment';
+import { AuthSession } from '../../../../core/services/auth-session';
 import { LoginPage } from './login-page';
 
 @Component({ template: '' })
@@ -19,6 +21,45 @@ describe('LoginPage', () => {
         provideRouter([{ path: 'groups', component: GroupsStub }]),
       ],
     }).compileComponents();
+  });
+
+  it('should authenticate and redirect to groups on valid credentials (CA1)', async () => {
+    const fixture = TestBed.createComponent(LoginPage);
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const router = TestBed.inject(Router);
+    const authSession = TestBed.inject(AuthSession);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const emailInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-email"]');
+    const passwordInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-password"]');
+    const submitButton = compiled.querySelector<HTMLButtonElement>('[data-testid="submit-login"]');
+
+    emailInput!.value = '  MARIA@EXAMPLE.COM  ';
+    emailInput!.dispatchEvent(new Event('input'));
+    passwordInput!.value = '123456';
+    passwordInput!.dispatchEvent(new Event('input'));
+
+    submitButton!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const request = httpTesting.expectOne(`${environment.apiUrl}/users`);
+    expect(request.request.method).toBe('GET');
+
+    request.flush([
+      { id: '1', name: 'Maria', email: 'maria@example.com', password: '123456' },
+    ]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(authSession.authenticatedUser()).toEqual({
+      id: '1',
+      name: 'Maria',
+      email: 'maria@example.com',
+    });
+    expect(router.url).toBe('/groups');
   });
 
   it('should show an error under each invalid field and send no request when submitting invalid or empty fields (CA3)', async () => {
