@@ -136,4 +136,45 @@ describe('LoginPage', () => {
     expect(passwordInput!.value).toBe('123456');
     expect(authSession.authenticatedUser()).toBeNull();
   });
+
+  it('should display "Não foi possível conectar ao servidor. Tente novamente." at the top of the form, preserve input values, write nothing, and keep button enabled on server error (CA4)', async () => {
+    const fixture = TestBed.createComponent(LoginPage);
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const router = TestBed.inject(Router);
+    const authSession = TestBed.inject(AuthSession);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const emailInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-email"]');
+    const passwordInput = compiled.querySelector<HTMLInputElement>('[data-testid="input-password"]');
+    const submitButton = compiled.querySelector<HTMLButtonElement>('[data-testid="submit-login"]');
+
+    emailInput!.value = 'maria@example.com';
+    emailInput!.dispatchEvent(new Event('input'));
+    passwordInput!.value = '123456';
+    passwordInput!.dispatchEvent(new Event('input'));
+
+    submitButton!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const request = httpTesting.expectOne(`${environment.apiUrl}/users`);
+    expect(request.request.method).toBe('GET');
+    request.flush('Server Error', { status: 500, statusText: 'Internal Server Error' });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const serverError = compiled.querySelector('[data-testid="error-server"]');
+    expect(serverError).toBeTruthy();
+    expect(serverError!.textContent?.trim()).toBe(
+      'Não foi possível conectar ao servidor. Tente novamente.',
+    );
+
+    expect(emailInput!.value).toBe('maria@example.com');
+    expect(passwordInput!.value).toBe('123456');
+    expect(authSession.authenticatedUser()).toBeNull();
+    expect(router.url).not.toBe('/groups');
+    expect(submitButton!.disabled).toBe(false);
+  });
 });

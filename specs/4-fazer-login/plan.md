@@ -25,7 +25,7 @@ issue: 4
 
 - [x] **Tarefa 5 — Credenciais inválidas** — Cobre: CA2. Teste primeiro: submeter com e-mail inexistente ou senha divergente exibe "E-mail ou senha inválidos" abaixo do formulário, permanece em `/login` e preserva os valores digitados. Entrega: tratamento do retorno `null` do repositório.
 
-- [ ] **Tarefa 6 — Erro de servidor** — Cobre: CA4. Teste primeiro: falha do servidor (500/timeout) exibe "Não foi possível conectar ao servidor. Tente novamente." no topo do formulário, preserva os dados digitados, não autentica e reabilita o botão. Entrega: tratamento de erro HTTP no envio do login.
+- [x] **Tarefa 6 — Erro de servidor** — Cobre: CA4. Teste primeiro: falha do servidor (500/timeout) exibe "Não foi possível conectar ao servidor. Tente novamente." no topo do formulário, preserva os dados digitados, não autentica e reabilita o botão. Entrega: tratamento de erro HTTP no envio do login.
 
 - [ ] **Tarefa 7 — Prevenção de duplo clique** — Cobre: CA5. Teste primeiro: enquanto a requisição está em andamento o botão "Entrar" fica desabilitado e apenas uma requisição é enviada. Entrega: estado de envio no formulário que bloqueia submissões duplicadas.
 
