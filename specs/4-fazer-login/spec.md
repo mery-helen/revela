@@ -1,6 +1,6 @@
 ---
 issue: 4
-status: rascunho
+status: aprovada
 ---
 
 # Especificação da Feature — US02: Fazer login
