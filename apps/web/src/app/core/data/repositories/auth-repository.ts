@@ -25,6 +25,22 @@ export class AuthRepository {
       .pipe(map((users) => users.some((user) => this.normalizeEmail(user.email) === normalizedEmail)));
   }
 
+  signIn(email: string, password: string): Observable<User | null> {
+    const normalizedEmail = this.normalizeEmail(email);
+
+    return this.http.get<StoredUser[]>(this.usersUrl).pipe(
+      map((users) => {
+        const user = users.find(
+          (storedUser) =>
+            this.normalizeEmail(storedUser.email) === normalizedEmail &&
+            storedUser.password === password,
+        );
+
+        return user ? this.toUser(user) : null;
+      }),
+    );
+  }
+
   private normalizeEmail(email: string): string {
     return email.trim().toLowerCase();
   }

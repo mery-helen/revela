@@ -15,7 +15,7 @@ issue: 4
 
 ## Tarefas
 
-- [ ] **Tarefa 1 — Autenticação no repositório** — Cobre: passo técnico (destrava CA1, CA2, CA4). Teste primeiro: `signIn` encontra o usuário por e-mail case-insensitive e ignorando espaços nas pontas quando a senha é idêntica, retorna `null` quando o e-mail não existe ou a senha diverge, e propaga erro HTTP. Entrega: método `signIn` em `AuthRepository` retornando `Observable<User | null>`.
+- [x] **Tarefa 1 — Autenticação no repositório** — Cobre: passo técnico (destrava CA1, CA2, CA4). Teste primeiro: `signIn` encontra o usuário por e-mail case-insensitive e ignorando espaços nas pontas quando a senha é idêntica, retorna `null` quando o e-mail não existe ou a senha diverge, e propaga erro HTTP. Entrega: método `signIn` em `AuthRepository` retornando `Observable<User | null>`.
 
 - [ ] **Tarefa 2 — Rota de login na casca** — Cobre: CA6. Teste primeiro: ao navegar para `/login`, a tela de login é renderizada entre o cabeçalho e o rodapé. Entrega: `LoginPage` com `data-page="login"` (já roteada) verificada no `app.spec.ts`.
 
